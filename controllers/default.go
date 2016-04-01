@@ -16,6 +16,7 @@ func (c *MainController) Get() {
 	//c.TplName = "index.tpl"
 	c.Data["json"] = "astaxie@gmail.com"
 	c.ServeJSON()
+
 	//c.ServeJSON()
 
 }
