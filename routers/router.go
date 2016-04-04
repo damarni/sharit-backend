@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"sharitback/controllers"
+	"sharit-backend/controllers"
 
 	"github.com/astaxie/beego"
 )

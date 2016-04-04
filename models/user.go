@@ -3,7 +3,7 @@ package models
 import (
 	//"github.com/novikk/redline/models/mongo"
 
-	"sharitback/models/mongo"
+	"sharit-backend/models/mongo"
 
 	"github.com/astaxie/beego"
 
