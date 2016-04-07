@@ -9,30 +9,29 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// Product is a product :D
-type Product struct {
-	ID       bson.ObjectId `bson:"_id,omitempty"`
-	ItemName string        `bson:"item,omitempty"`
-	Type     string        `bson:"categoria,omitempty"`
-	Image    string        `bson:"imagen,omitempty"`
+// Item is a product :D
+type Item struct {
+	ID          bson.ObjectId `bson:"_id,omitempty"`
+	ItemName    string        `bson:"item,omitempty"`
+	Description string        `bson:"description,omitempty"`
+	Image       string        `bson:"imagen,omitempty"`
 }
 
-// Products is a list of products
-type Products []Product
+// Items is a list of item
+type Items []Item
 
-// FindAll returns all products
-func (p *Products) FindAll() error {
+// GetAllItems returns all items
+func GetAllItems() (Items, error) {
 	db := mongo.Conn()
 	defer db.Close()
-
+	var p Items
 	c := db.DB(beego.AppConfig.String("database")).C("items")
-	err := c.Find(bson.M{}).All(p)
-
-	return err
+	err := c.Find(bson.M{}).All(&p)
+	return p, err
 }
 
-// FindByID returns product given id
-func (p *Product) FindByID(id string) error {
+// FindByID returns item given id
+func (p *Item) FindByID(id string) error {
 	db := mongo.Conn()
 	defer db.Close()
 
@@ -43,6 +42,17 @@ func (p *Product) FindByID(id string) error {
 
 	c := db.DB(beego.AppConfig.String("database")).C("items")
 	err := c.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(p)
+
+	return err
+}
+
+// Create load the item to th db
+func (p *Item) Create() error {
+	db := mongo.Conn()
+	defer db.Close()
+
+	c := db.DB(beego.AppConfig.String("database")).C("items")
+	err := c.Insert(p)
 
 	return err
 }
