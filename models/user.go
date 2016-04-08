@@ -16,16 +16,15 @@ type User struct {
 	IDuser string        `bson:"iduser,omitempty"`
 	Email  string        `bson:"email,omitempty"`
 	Avatar string        `bson:"avatar,omitempty"`
+	Pass   string        `bson:"pass,omitempty"`
 }
 
 // Create creates a user with its information in the database
 func (u *User) Create() error {
 	db := mongo.Conn()
 	defer db.Close()
-
 	c := db.DB(beego.AppConfig.String("database")).C("users")
 	err := c.Insert(u)
-
 	return err
 }
 
