@@ -12,18 +12,20 @@ import (
 
 // User is a user :D
 type User struct {
-	ID     bson.ObjectId `bson:"_id,omitempty"`
-	IDuser string        `bson:"iduser,omitempty"`
-	Email  string        `bson:"email,omitempty"`
-	Avatar string        `bson:"avatar,omitempty"`
-	Pass   string        `bson:"pass,omitempty"`
+	ID      bson.ObjectId `bson:"_id,omitempty"`
+	IDuser  string        `bson:"iduser,omitempty"`
+	Email   string        `bson:"email,omitempty"`
+	Avatar  string        `bson:"avatar,omitempty"`
+	Pass    string        `bson:"pass,omitempty"`
+	Name    string        `bson:"name,omitempty"`
+	Surname string        `bson:"surname,omitempty"`
 }
 
 // Create creates a user with its information in the database
 func (u *User) Create() error {
 	db := mongo.Conn()
 	defer db.Close()
-	c := db.DB(beego.AppConfig.String("database")).C("users")
+	c := db.DB(beego.AppConfig.String("database")).C(" ")
 	err := c.Insert(u)
 	return err
 }
