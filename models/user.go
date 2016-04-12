@@ -36,7 +36,7 @@ func (u *User) Create() error {
 // FindUserByID returns a user found by steamid
 func FindUserByID(id string) (User, error) {
 	var u User
-	u.find
+
 	db := mongo.Conn()
 	defer db.Close()
 
