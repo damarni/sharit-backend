@@ -12,6 +12,7 @@ type ItemController struct {
 
 // Put register
 func (c *ItemController) Put() {
+
 	name := c.GetString("name")
 	description := c.GetString("description")
 	var u models.Item
