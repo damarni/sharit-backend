@@ -12,13 +12,14 @@ import (
 
 // User is a user :D
 type User struct {
-	ID      bson.ObjectId `bson:"_id,omitempty"`
-	IDuser  string        `bson:"iduser,omitempty"`
-	Email   string        `bson:"email,omitempty"`
-	Avatar  string        `bson:"avatar,omitempty"`
-	Pass    string        `bson:"pass,omitempty"`
-	Name    string        `bson:"name,omitempty"`
-	Surname string        `bson:"surname,omitempty"`
+	ID        bson.ObjectId `bson:"_id,omitempty"`
+	IDuser    string        `bson:"iduser,omitempty"`
+	Email     string        `bson:"email,omitempty"`
+	Pass      string        `bson:"pass,omitempty"`
+	Name      string        `bson:"name,omitempty"`
+	Surname   string        `bson:"surname,omitempty"`
+	Stars     string        `bson:"stars,omitempty"`
+	ItemsUser Items         `bson:"itemsUser,omitempty"`
 }
 
 //Users is a list of User

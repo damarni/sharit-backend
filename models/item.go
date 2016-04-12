@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"sharit-backend/models/mongo"
+	"time"
 
 	"github.com/astaxie/beego"
 
@@ -15,6 +16,11 @@ type Item struct {
 	ItemName    string        `bson:"item,omitempty"`
 	Description string        `bson:"description,omitempty"`
 	Image       string        `bson:"imagen,omitempty"`
+	Stars       string        `bson:"stars,omitempty"`
+	LastSharit  time.Time     `bson:"lastSharit,omitempty"`
+	OwnerName   string        `bson:"ownerName,omitempty"`
+	X           string        `bson:"x,omitempty"`
+	Y           string        `bson:"y,omitempty"`
 }
 
 // Items is a list of item
