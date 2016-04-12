@@ -18,6 +18,9 @@ type User struct {
 	Avatar string        `bson:"avatar,omitempty"`
 }
 
+//Users is a list of User
+type Users []User
+
 // Create creates a user with its information in the database
 func (u *User) Create() error {
 	db := mongo.Conn()
@@ -32,7 +35,7 @@ func (u *User) Create() error {
 // FindUserByID returns a user found by steamid
 func FindUserByID(id string) (User, error) {
 	var u User
-
+	u.find
 	db := mongo.Conn()
 	defer db.Close()
 
@@ -51,4 +54,14 @@ func (u *User) UpdateEmail(email string) error {
 	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$set": bson.M{"email": email}})
 
 	return err
+}
+
+// GetAllUsers returns all users
+func GetAllUsers() (Users, error) {
+	db := mongo.Conn()
+	defer db.Close()
+	var p Users
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+	err := c.Find(bson.M{}).All(&p)
+	return p, err
 }

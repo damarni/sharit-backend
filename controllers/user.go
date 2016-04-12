@@ -1,6 +1,9 @@
 package controllers
 
-import "sharit-backend/models"
+import (
+	"encoding/json"
+	"sharit-backend/models"
+)
 
 // UserController does everything related to steam login
 type UserController struct {
@@ -19,10 +22,18 @@ func (c *UserController) Register() {
 
 // GetAll get all the users
 func (c *UserController) GetAll() {
-
+	users, _ := models.GetAllUsers()
+	_, er := json.Marshal(users)
+	if er != nil {
+		//
+		c.Data["json"] = "error no users"
+	} else {
+		c.Data["json"] = users
+	}
+	c.ServeJSON()
 }
 
-// Get get an user
+// Get get a user
 func (c *UserController) Get() {
 
 	id := c.GetString("id")
