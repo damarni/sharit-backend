@@ -44,6 +44,24 @@ func (c *UserController) Register() {
 	c.ServeJSON()
 }
 
+// RegisterDebug register
+func (c *UserController) RegisterDebug() {
+
+	name := c.GetString("name")
+	surname := c.GetString("surname")
+	stars := "0"
+	mail := c.GetString("mail")
+	pass := c.GetString("pass")
+	var u models.User
+	u.IDuser = EncodeID64(mail, name, surname)
+	u.Email = mail
+	u.Pass = pass
+	u.Name = name
+	u.Stars = stars
+	u.Create()
+	c.ServeJSON()
+}
+
 //EditProfile : only can update email and password
 func (c *UserController) EditProfile() {
 
