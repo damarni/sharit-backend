@@ -54,9 +54,13 @@ func (c *UserController) EditProfile() {
 		c.Data["json"] = "error token id"
 		c.ServeJSON()
 	}
+	coordx := c.GetString("X")
+	coordy := c.GetString("Y")
 	var u models.User
 	u.IDuser = id
 	u.Email = mail
+	u.X = coordx
+	u.Y = coordy
 	err = u.UpdateUser()
 	if err != nil {
 		fmt.Println("error al fer update")
