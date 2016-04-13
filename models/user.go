@@ -31,7 +31,7 @@ type Users []User
 func (u *User) Create() error {
 	db := mongo.Conn()
 	defer db.Close()
-	c := db.DB(beego.AppConfig.String("database")).C(" ")
+	c := db.DB(beego.AppConfig.String("database")).C("users")
 	err := c.Insert(u)
 	return err
 }
@@ -49,14 +49,12 @@ func FindUserByID(id string) (User, error) {
 	return u, err
 }
 
-// UpdateEmail updates user email
-func (u *User) UpdateEmail(email string) error {
+// UpdateUser updates user profile
+func (u *User) UpdateUser() error {
 	db := mongo.Conn()
 	defer db.Close()
-
 	c := db.DB(beego.AppConfig.String("database")).C("users")
-	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$set": bson.M{"email": email}})
-
+	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$set": bson.M{"email": u.Email}})
 	return err
 }
 
