@@ -25,14 +25,22 @@ func (c *UserController) PutItem() {
 
 // Register register
 func (c *UserController) Register() {
-	id := c.GetString("id")
+
+	name := c.GetString("name")
+	surname := c.GetString("surname")
+	stars := "0"
 	mail := c.GetString("mail")
 	pass := c.GetString("pass")
 	var u models.User
-	u.IDuser = id
+	u.IDuser = EncodeID64(mail, name, surname)
 	u.Email = mail
 	u.Pass = pass
+	u.Name = name
+	u.Stars = stars
+	u.Token, _ = EncodeToken(u.IDuser, pass)
 	u.Create()
+
+	c.Data["json"] = "{\"Token\":" + u.Token + ", \"IDuser\":" + u.IDuser + "}"
 	c.ServeJSON()
 }
 

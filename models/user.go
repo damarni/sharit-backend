@@ -22,6 +22,7 @@ type User struct {
 	ItemsUser Items         `bson:"itemsUser,omitempty"`
 	X         string        `bson:"x,omitempty"`
 	Y         string        `bson:"y,omitempty"`
+	Token     string        `bson:"token,omitempty"`
 }
 
 //Users is a list of User
