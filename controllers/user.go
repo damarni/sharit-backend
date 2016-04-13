@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"sharit-backend/models"
 )
 
@@ -26,6 +27,29 @@ func (c *UserController) Register() {
 	u.Pass = pass
 	u.Create()
 	c.ServeJSON()
+}
+
+//EditProfile : only can update email and password
+func (c *UserController) EditProfile() {
+
+	mail := c.GetString("mail")
+	myToken := c.GetString("token")
+	id, err := DecodeToken(myToken)
+	if err != nil {
+		c.Data["json"] = "error token id"
+		c.ServeJSON()
+	}
+	var u models.User
+	u.IDuser = id
+	u.Email = mail
+	err = u.UpdateUser()
+	if err != nil {
+		fmt.Println("error al fer update")
+	} else {
+		fmt.Println("update ok")
+
+	}
+	// c.ServeJSON()
 }
 
 // GetAll get all the users
