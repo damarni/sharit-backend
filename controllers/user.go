@@ -25,7 +25,10 @@ func (c *UserController) PutItem() {
 
 // Register register
 func (c *UserController) Register() {
-	id := c.GetString("id")
+
+	name := c.GetString("name")
+	surname := c.GetString("surname")
+	stars := "0"
 	mail := c.GetString("mail")
 	pass := c.GetString("pass")
 	var u models.User
