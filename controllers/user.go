@@ -32,10 +32,15 @@ func (c *UserController) Register() {
 	mail := c.GetString("mail")
 	pass := c.GetString("pass")
 	var u models.User
-	u.IDuser = id
+	u.IDuser = EncodeID64(mail, name, surname)
 	u.Email = mail
 	u.Pass = pass
+	u.Name = name
+	u.Stars = stars
+	u.Token, _ = EncodeToken(u.IDuser, pass)
 	u.Create()
+
+	c.Data["json"] = "{\"Token\":" + u.Token + ", \"IDuser\":" + u.IDuser + "}"
 	c.ServeJSON()
 }
 
