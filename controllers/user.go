@@ -15,6 +15,13 @@ func (c *UserController) Login() {
 
 }
 
+// PutItem register
+func (c *UserController) PutItem() {
+	//reb un item
+	//mirar user token etc
+	//afegir item
+}
+
 // Register register
 func (c *UserController) Register() {
 	id := c.GetString("id")

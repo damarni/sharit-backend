@@ -15,6 +15,7 @@ func (c *ItemController) Put() {
 
 	name := c.GetString("name")
 	description := c.GetString("description")
+
 	var u models.Item
 	u.ItemName = name
 	u.Description = description
