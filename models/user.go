@@ -69,3 +69,12 @@ func GetAllUsers() (Users, error) {
 	err := c.Find(bson.M{}).All(&p)
 	return p, err
 }
+
+// PutItemModel put item on a user array
+func (u *User) PutItemModel(i Item) error {
+	db := mongo.Conn()
+	defer db.Close()
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"itemsUser": i}})
+	return err
+}

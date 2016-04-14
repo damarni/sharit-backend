@@ -116,3 +116,53 @@ func (c *UserController) Get() {
 	c.ServeJSON()
 
 }
+
+// PutItem get a user
+func (c *UserController) PutItem() {
+	//rebre el token i verificar si es coorrecte
+	name := c.GetString("name")
+	description := c.GetString("description")
+	stars := "0"
+	//image = ?
+	token := c.GetString("token")
+	iduser := DecodeToken(token)
+	var i models.Item
+	i.ItemName = name
+	i.Description = description
+	i.Stars = stars
+
+	u, err := models.FindUserByID(iduser)
+	if err != nil {
+		c.Data["json"] = "user not found"
+	} else {
+		u.PutItemModel(i)
+		c.Data["json"] = u
+	}
+	c.ServeJSON()
+
+}
+
+// PutItemDebug get a user
+func (c *UserController) PutItemDebug() {
+	//rebre el token i verificar si es coorrecte
+	name := c.GetString("name")
+	description := c.GetString("description")
+	stars := "0"
+	//image = ?
+	iduser := c.GetString("id")
+	var i models.Item
+	i.ItemName = name
+	i.Description = description
+	i.Stars = stars
+
+	u, err := models.FindUserByID(iduser)
+	if err != nil {
+		c.Data["json"] = "user not found"
+	} else {
+		u.PutItemModel(i)
+		c.Data["json"] = u
+	}
+
+	c.ServeJSON()
+
+}
