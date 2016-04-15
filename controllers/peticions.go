@@ -6,18 +6,13 @@ import (
 	"sharit-backend/models"
 )
 
-// UserController does everything related to steam login
-type UserController struct {
+// PeticionsController does everything related to steam login
+type PeticionsController struct {
 	BaseController
 }
 
-// Login user
-func (c *UserController) Login() {
-
-}
-
 // Register register
-func (c *UserController) Register() {
+func (c *PeticionsController) Register() {
 
 	name := c.GetString("name")
 	surname := c.GetString("surname")
@@ -38,7 +33,7 @@ func (c *UserController) Register() {
 }
 
 // RegisterDebug register
-func (c *UserController) RegisterDebug() {
+func (c *PeticionsController) RegisterDebug() {
 
 	name := c.GetString("name")
 	surname := c.GetString("surname")
@@ -56,7 +51,7 @@ func (c *UserController) RegisterDebug() {
 }
 
 //EditProfile : only can update email and password
-func (c *UserController) EditProfile() {
+func (c *PeticionsController) EditProfile() {
 
 	mail := c.GetString("mail")
 	myToken := c.GetString("token")
@@ -83,7 +78,7 @@ func (c *UserController) EditProfile() {
 }
 
 // GetAll get all the users
-func (c *UserController) GetAll() {
+func (c *PeticionsController) GetAll() {
 	users, _ := models.GetAllUsers()
 	_, er := json.Marshal(users)
 	if er != nil {
@@ -96,7 +91,7 @@ func (c *UserController) GetAll() {
 }
 
 // Get get a user
-func (c *UserController) Get() {
+func (c *PeticionsController) Get() {
 
 	id := c.GetString("id")
 
@@ -111,14 +106,14 @@ func (c *UserController) Get() {
 }
 
 // PutItem get a user
-func (c *UserController) PutItem() {
+func (c *PeticionsController) PutItem() {
 	//rebre el token i verificar si es coorrecte
 	name := c.GetString("name")
 	description := c.GetString("description")
 	stars := "0"
 	//image = ?
 	token := c.GetString("token")
-	iduser, err := DecodeToken(token)
+	iduser, _ := DecodeToken(token)
 	var i models.Item
 	i.ItemName = name
 	i.Description = description
@@ -135,22 +130,8 @@ func (c *UserController) PutItem() {
 
 }
 
-// GetItems get a user
-func (c *UserController) GetItems() {
-	token := c.GetString("token")
-	iduser, _ := DecodeToken(token)
-	u, err := models.FindUserByID(iduser)
-	if err != nil {
-		c.Data["json"] = "user not found"
-	} else {
-		c.Data["json"] = u.ItemsUser
-	}
-	c.ServeJSON()
-
-}
-
 // PutItemDebug get a user
-func (c *UserController) PutItemDebug() {
+func (c *PeticionsController) PutItemDebug() {
 	//rebre el token i verificar si es coorrecte
 	name := c.GetString("name")
 	description := c.GetString("description")
@@ -172,75 +153,4 @@ func (c *UserController) PutItemDebug() {
 
 	c.ServeJSON()
 
-}
-
-// PutPeticioRadi get a user
-func (c *UserController) PutPeticioRadi() {
-	//rebre el token i verificar si es coorrecte
-	name := c.GetString("name")
-	description := c.GetString("description")
-	token := c.GetString("token")
-	iduser, err := DecodeToken(token)
-	u, err := models.FindUserByID(iduser)
-	var p models.Peticio
-	p.IDuser = iduser
-	p.Name = name
-	p.To = ""
-	p.Descripcio = description
-	p.X = u.X
-	p.Y = u.Y
-	if err != nil {
-		c.Data["json"] = "user not found"
-	} else {
-		p.Create()
-		c.Data["json"] = p
-	}
-	c.ServeJSON()
-}
-
-// PutPeticioRadiDebug get a user
-func (c *UserController) PutPeticioRadiDebug() {
-	//rebre el token i verificar si es coorrecte
-	name := c.GetString("name")
-	description := c.GetString("description")
-	iduser := c.GetString("iduser")
-
-	u, err := models.FindUserByID(iduser)
-	var p models.Peticio
-	p.IDuser = iduser
-	p.Name = name
-	p.To = ""
-	p.Descripcio = description
-	p.X = u.X
-	p.Y = u.Y
-	if err != nil {
-		c.Data["json"] = "user not found"
-	} else {
-		p.Create()
-		c.Data["json"] = p
-	}
-	c.ServeJSON()
-}
-
-// PutPeticioUsuari get a user
-func (c *UserController) PutPeticioUsuari() {
-	//fer una peticio especifica a un usuari
-
-}
-
-// GetPeticionsRadiUser get a user
-func (c *UserController) GetPeticionsRadiUser() {
-	token := c.GetString("token")
-	iduser, err := DecodeToken(token)
-	u, err := models.FindUserByID(iduser)
-	if err == nil {
-		peticions, err := models.GetPeticionsRadi(u.X, u.Y)
-		if err == nil {
-			c.Data["json"] = peticions
-			c.ServeJSON()
-		}
-	} else {
-		c.Data["json"] = "error a les petcions"
-		c.ServeJSON()
-	}
 }

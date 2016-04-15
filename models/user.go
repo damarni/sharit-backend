@@ -20,8 +20,8 @@ type User struct {
 	Surname   string        `bson:"surname,omitempty"`
 	Stars     string        `bson:"stars,omitempty"`
 	ItemsUser Items         `bson:"itemsUser,omitempty"`
-	X         string        `bson:"x,omitempty"`
-	Y         string        `bson:"y,omitempty"`
+	X         int           `bson:"x,omitempty"`
+	Y         int           `bson:"y,omitempty"`
 	Token     string        `bson:"token,omitempty"`
 	FavUser   Favs          `bson:"favuser,omitempty"`
 }
