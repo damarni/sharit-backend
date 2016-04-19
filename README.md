@@ -6,5 +6,6 @@ PES - backend sharit
 
 2) per activar el beego
 > bee run sharit-backend
+
 on sharit-backend es la carpeta on tenim el nostre codi 
 
