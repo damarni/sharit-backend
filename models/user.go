@@ -12,18 +12,19 @@ import (
 
 // User is a user :D
 type User struct {
-	ID        bson.ObjectId `bson:"_id,omitempty"`
-	IDuser    string        `bson:"iduser,omitempty"`
-	Email     string        `bson:"email,omitempty"`
-	Pass      string        `bson:"pass,omitempty"`
-	Name      string        `bson:"name,omitempty"`
-	Surname   string        `bson:"surname,omitempty"`
-	Stars     string        `bson:"stars,omitempty"`
-	ItemsUser Items         `bson:"itemsUser,omitempty"`
-	X         int           `bson:"x,omitempty"`
-	Y         int           `bson:"y,omitempty"`
-	Token     string        `bson:"token,omitempty"`
-	FavUser   Favs          `bson:"favuser,omitempty"`
+	ID            bson.ObjectId `bson:"_id,omitempty"`
+	IDuser        string        `bson:"iduser,omitempty"`
+	Email         string        `bson:"email,omitempty"`
+	Pass          string        `bson:"pass,omitempty"`
+	Name          string        `bson:"name,omitempty"`
+	Surname       string        `bson:"surname,omitempty"`
+	Stars         string        `bson:"stars,omitempty"`
+	ItemsUser     Items         `bson:"itemsUser,omitempty"`
+	X             int           `bson:"x,omitempty"`
+	Y             int           `bson:"y,omitempty"`
+	Token         string        `bson:"token,omitempty"`
+	FavUser       Favs          `bson:"favuser,omitempty"`
+	PeticionsUser Peticions     `bson:"peticions,omitempty"`
 }
 
 //Users is a list of User

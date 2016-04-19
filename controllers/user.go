@@ -135,7 +135,7 @@ func (c *UserController) PutItem() {
 
 }
 
-// GetItems get a user
+// GetItems return user items
 func (c *UserController) GetItems() {
 	token := c.GetString("token")
 	iduser, _ := DecodeToken(token)
@@ -174,7 +174,7 @@ func (c *UserController) PutItemDebug() {
 
 }
 
-// PutPeticioRadi get a user
+// PutPeticioRadi put peticio al radi
 func (c *UserController) PutPeticioRadi() {
 	//rebre el token i verificar si es coorrecte
 	name := c.GetString("name")
@@ -239,6 +239,21 @@ func (c *UserController) GetPeticionsRadiUser() {
 			c.Data["json"] = peticions
 			c.ServeJSON()
 		}
+	} else {
+		c.Data["json"] = "error a les petcions"
+		c.ServeJSON()
+	}
+}
+
+// GetPeticionsUsuari get a user
+func (c *UserController) GetPeticionsUsuari() {
+	token := c.GetString("token")
+	iduser, err := DecodeToken(token)
+	u, err := models.FindUserByID(iduser)
+	if err == nil {
+		c.Data["json"] = u.PeticionsUser
+		c.ServeJSON()
+
 	} else {
 		c.Data["json"] = "error a les petcions"
 		c.ServeJSON()

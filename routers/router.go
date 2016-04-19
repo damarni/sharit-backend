@@ -16,6 +16,8 @@ func init() {
 	beego.Router("/user/registerdebug", &controllers.UserController{}, "get:RegisterDebug")
 	beego.Router("/user/getPeticionsRadi", &controllers.UserController{}, "get:GetPeticionsRadiUser")
 	beego.Router("/user/putPeticioRadi", &controllers.UserController{}, "get:PutPeticioRadi")
+	beego.Router("/user/getPeticionsRadi", &controllers.UserController{}, "get:GetPeticionsUsuari")
+	beego.Router("/user/putPeticioRadi", &controllers.UserController{}, "get:PutPeticioUsuari")
 	beego.Router("/user/putItem", &controllers.UserController{}, "get:PutItem")
 	beego.Router("/user/getItems", &controllers.UserController{}, "get:GetItems")
 
