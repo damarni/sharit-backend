@@ -278,6 +278,7 @@ func (c *UserController) PutFavourite() {
 	c.ServeJSON()
 }
 
+//GetFavouritesUsuari get the user favourites
 func (c *UserController) GetFavouritesUsuari() {
 	token := c.GetString("token")
 	iduser, err := DecodeToken(token)
@@ -289,5 +290,26 @@ func (c *UserController) GetFavouritesUsuari() {
 	} else {
 		c.Data["json"] = "error a les petcions"
 		c.ServeJSON()
+	}
+}
+
+//PutCoordenades put cordenades for the user
+func (c *UserController) PutCoordenades() {
+	myToken := c.GetString("token")
+	id, err := DecodeToken(myToken)
+	if err != nil {
+		c.Data["json"] = "error token id"
+		c.ServeJSON()
+	}
+	u, err := models.FindUserByID(id)
+	coordx, _ := c.GetInt("X")
+	coordy, _ := c.GetInt("Y")
+	u.X = coordx
+	u.Y = coordy
+	err = u.UpdateUserCoords()
+	if err != nil {
+		fmt.Println("error al fer update")
+	} else {
+		fmt.Println("update ok")
 	}
 }

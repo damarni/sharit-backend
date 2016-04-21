@@ -61,6 +61,15 @@ func (u *User) UpdateUser() error {
 	return err
 }
 
+// UpdateUser updates user cordenades
+func (u *User) UpdateUserCoords() error {
+	db := mongo.Conn()
+	defer db.Close()
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$set": bson.M{"x": u.X, "y": u.Y}})
+	return err
+}
+
 // GetAllUsers returns all users
 func GetAllUsers() (Users, error) {
 	db := mongo.Conn()

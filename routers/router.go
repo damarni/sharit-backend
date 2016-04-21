@@ -26,4 +26,6 @@ func init() {
 	beego.Router("/item/getAllRadi", &controllers.ItemController{}, "get:GetAllRadi")
 
 	beego.Router("/user/putFavourite", &controllers.ItemController{}, "get:PutFavourite")
+	//falta getFavourite
+	beego.Router("/user/putCoordenades", &controllers.ItemController{}, "get:PutCoordenades")
 }
