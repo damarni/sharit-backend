@@ -24,4 +24,6 @@ func init() {
 	beego.Router("/item/put", &controllers.ItemController{}, "get:Put")
 	beego.Router("/item/getAll", &controllers.ItemController{}, "get:GetAll")
 	beego.Router("/item/getAllRadi", &controllers.ItemController{}, "get:GetAllRadi")
+
+	beego.Router("/user/putFavourite", &controllers.ItemController{}, "get:PutFavourite")
 }

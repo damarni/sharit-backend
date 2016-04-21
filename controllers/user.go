@@ -259,3 +259,35 @@ func (c *UserController) GetPeticionsUsuari() {
 		c.ServeJSON()
 	}
 }
+
+// PutFavourite put a favourite to a user
+func (c *UserController) PutFavourite() {
+	objecte := c.GetString("idItem")
+	token := c.GetString("token")
+	idusuari, err := DecodeToken(token)
+	var f models.Fav
+	f.IDuser = idusuari
+	f.IDitem = objecte
+	//u, err := models.FindUserByID(idusuari)
+	if err != nil {
+		c.Data["json"] = "error user not found"
+	} else {
+		f.Create()
+		c.Data["json"] = f
+	}
+	c.ServeJSON()
+}
+
+func (c *UserController) GetFavouritesUsuari() {
+	token := c.GetString("token")
+	iduser, err := DecodeToken(token)
+	u, err := models.FindUserByID(iduser)
+	if err == nil {
+		c.Data["json"] = u.FavUser
+		c.ServeJSON()
+
+	} else {
+		c.Data["json"] = "error a les petcions"
+		c.ServeJSON()
+	}
+}
