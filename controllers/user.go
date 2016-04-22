@@ -116,14 +116,14 @@ func (c *UserController) PutItem() {
 	name := c.GetString("name")
 	description := c.GetString("description")
 	stars := "0"
-	//image = ?
+	image := "image"
 	token := c.GetString("token")
 	iduser, err := DecodeToken(token)
 	var i models.Item
 	i.ItemName = name
 	i.Description = description
 	i.Stars = stars
-
+	i.Image = image
 	u, err := models.FindUserByID(iduser)
 	if err != nil {
 		c.Data["json"] = "user not found"
@@ -155,13 +155,13 @@ func (c *UserController) PutItemDebug() {
 	name := c.GetString("name")
 	description := c.GetString("description")
 	stars := "0"
-	//image = ?
+	image := "image"
 	iduser := c.GetString("id")
 	var i models.Item
 	i.ItemName = name
 	i.Description = description
 	i.Stars = stars
-
+	i.Image = image
 	u, err := models.FindUserByID(iduser)
 	if err != nil {
 		c.Data["json"] = "user not found"
