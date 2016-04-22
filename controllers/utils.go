@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/base64"
+	"fmt"
 	"time"
 
 	"github.com/astaxie/beego"
@@ -14,8 +15,11 @@ func DecodeToken(myToken string) (string, error) {
 		return []byte(beego.AppConfig.String("privateKey")), nil
 	})
 	if err == nil && token.Valid {
+		fmt.Println("tken valid")
 		return token.Claims["userid"].(string), nil
 	}
+	fmt.Println(err.Error())
+
 	return "Invalid token", err
 }
 
@@ -23,9 +27,20 @@ func DecodeToken(myToken string) (string, error) {
 func EncodeToken(userID, pass string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	token.Claims["userid"] = userID
-	token.Claims["pass"] = pass
+
 	token.Claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-	tokenString, err := token.SignedString(beego.AppConfig.String("privateKey"))
+	fmt.Println(beego.AppConfig.String("privateKey"))
+	key := []byte(beego.AppConfig.String("privateKey"))
+	tokenString, err := token.SignedString(key)
+	if err != nil {
+		fmt.Println("token")
+		fmt.Println(err.Error())
+
+	} else {
+		fmt.Println("token ok")
+
+	}
+	fmt.Println(tokenString)
 	return tokenString, err
 }
 
