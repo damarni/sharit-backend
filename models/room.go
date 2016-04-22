@@ -54,7 +54,7 @@ func FindRoom(id string) (Room, error) {
 	defer db.Close()
 
 	c := db.DB(beego.AppConfig.String("database")).C("rooms")
-	err := c.Find(bson.M{"userid1": usid}).One(&r)
+	err := c.Find(bson.M{"_id": id}).One(&r)
 	return r, err
 }
 

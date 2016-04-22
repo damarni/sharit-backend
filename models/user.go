@@ -61,7 +61,7 @@ func (u *User) UpdateUser() error {
 	return err
 }
 
-// UpdateUser updates user cordenades
+// UpdateUserCoords updates user cordenades
 func (u *User) UpdateUserCoords() error {
 	db := mongo.Conn()
 	defer db.Close()
