@@ -155,7 +155,7 @@ func (c *UserController) PutItemDebug() {
 	name := c.GetString("name")
 	description := c.GetString("description")
 	stars := "0"
-	image := "image"
+	image := c.GetString("image")
 	iduser := c.GetString("id")
 	var i models.Item
 	i.ItemName = name
