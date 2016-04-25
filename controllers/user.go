@@ -62,6 +62,7 @@ func (c *UserController) EditProfile() {
 	myToken := c.GetString("token")
 	id, err := DecodeToken(myToken)
 	if err != nil {
+		fmt.Println(err)
 		c.Data["json"] = "error token id"
 		c.ServeJSON()
 	}
@@ -79,7 +80,9 @@ func (c *UserController) EditProfile() {
 		fmt.Println("update ok")
 
 	}
-	// c.ServeJSON()
+
+	c.Data["json"] = "ok"
+	c.ServeJSON()
 }
 
 // GetAll get all the users

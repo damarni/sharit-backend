@@ -15,7 +15,7 @@ func DecodeToken(myToken string) (string, error) {
 		return []byte(beego.AppConfig.String("privateKey")), nil
 	})
 	if err == nil && token.Valid {
-		fmt.Println("tken valid")
+		fmt.Println("token valid")
 		return token.Claims["userid"].(string), nil
 	}
 	fmt.Println(err.Error())

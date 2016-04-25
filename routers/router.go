@@ -21,10 +21,10 @@ func init() {
 	beego.Router("/user/putItem", &controllers.UserController{}, "post:PutItem")
 	beego.Router("/user/getItems", &controllers.UserController{}, "get:GetItems")
 
-	beego.Router("/room/create", &controllers.UserController{}, "get:Create")
-	beego.Router("/room/findRooms", &controllers.UserController{}, "get:FindRooms")
-	beego.Router("/room/findRoom", &controllers.UserController{}, "get:FindRoom")
-	beego.Router("/room/putMessage", &controllers.UserController{}, "get:PutMessage")
+	//	beego.Router("/room/create", &controllers.SocketController{}, "get:CreateRoom")
+	//	beego.Router("/room/findRooms", &controllers.UserController{}, "get:FindRooms")
+	//	beego.Router("/room/findRoom", &controllers.UserController{}, "get:FindRoom")
+	//	beego.Router("/room/putMessage", &controllers.UserController{}, "get:PutMessage")
 
 	beego.Router("/item/put", &controllers.ItemController{}, "get:Put")
 	beego.Router("/item/getAll", &controllers.ItemController{}, "get:GetAll")

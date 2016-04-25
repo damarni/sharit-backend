@@ -11,7 +11,7 @@ type SocketController struct {
 func (c *SocketController) CreateRoom() {
 
 	usid1 := c.GetString("userid1")
-	udid2 := c.GetString("userid2")
+	usid2 := c.GetString("userid2")
 	itemid := c.GetString("itemid")
 	var r models.Room
 	r.UserID1 = usid1
@@ -53,7 +53,7 @@ func (c *SocketController) PutMessage() {
 	var m models.Message
 	m.First = who
 	m.Text = text
-	r := models.FindRoom(idroom)
+	r, err := models.FindRoom(idroom)
 	r.PutMessage(m)
 	if err != nil {
 		c.Data["json"] = "user not found"
