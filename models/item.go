@@ -12,7 +12,7 @@ import (
 
 // Item is a product :D
 type Item struct {
-	ID          uint32    `bson:"_id,omitempty"`
+	ID          uint64    `bson:"_id,omitempty"`
 	ItemName    string    `bson:"item,omitempty"`
 	Description string    `bson:"description,omitempty"`
 	Image       string    `bson:"imagen,omitempty"`

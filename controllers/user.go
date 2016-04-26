@@ -162,7 +162,7 @@ func (c *UserController) GetItem() models.Item {
 	idItem := c.GetString("idItem")
 	u, err := models.FindUserByID(iduser)
 	var item models.Item
-	uintID := strconv.ParseUint(idItem, 32)
+	uintID, _ := strconv.ParseUint(idItem, 10, 32)
 	if err != nil {
 		c.Data["json"] = "user not found"
 	} else {

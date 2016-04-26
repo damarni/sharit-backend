@@ -53,8 +53,8 @@ func EncodeID64(email, name, surname string) string {
 }
 
 // hash hash string
-func hash(s string) uint32 {
-	h := fnv.New32a()
+func hash(s string) uint64 {
+	h := fnv.New64a()
 	h.Write([]byte(s))
-	return h.Sum32()
+	return h.Sum64()
 }
