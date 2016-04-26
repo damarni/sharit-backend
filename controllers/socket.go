@@ -37,6 +37,21 @@ func (c *SocketController) GetRooms() {
 
 }
 
+// GetRoom get a user
+func (c *SocketController) GetRoom() {
+
+	id := c.GetString("roomid")
+
+	u, err := models.FindRoom(id)
+	if err != nil {
+		c.Data["json"] = "user not found"
+	} else {
+		c.Data["json"] = u
+	}
+	c.ServeJSON()
+
+}
+
 // PutMessage get a user
 func (c *SocketController) PutMessage() {
 

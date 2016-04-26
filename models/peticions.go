@@ -17,6 +17,7 @@ type Peticio struct {
 	Name       string        `bson:"name,omitempty"`
 	To         string        `bson:"to,omitempty"`
 	Descripcio string        `bson:"descripcio,omitempty"`
+	ItemID     string        `bson:"itemID,omitempty"`
 	X          int           `bson:"x,omitempty"`
 	Y          int           `bson:"y,omitempty"`
 }

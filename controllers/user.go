@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"sharit-backend/models"
+	"strconv"
 )
 
 // UserController does everything related to steam login
@@ -123,6 +124,8 @@ func (c *UserController) PutItem() {
 	token := c.GetString("token")
 	iduser, err := DecodeToken(token)
 	var i models.Item
+	stt := token + name
+	i.ID = hash(stt)
 	i.ItemName = name
 	i.Description = description
 	i.Stars = stars
@@ -150,6 +153,27 @@ func (c *UserController) GetItems() {
 	}
 	c.ServeJSON()
 
+}
+
+// GetItem return user items
+func (c *UserController) GetItem() models.Item {
+	token := c.GetString("token")
+	iduser, _ := DecodeToken(token)
+	idItem := c.GetString("idItem")
+	u, err := models.FindUserByID(iduser)
+	var item models.Item
+	uintID := strconv.ParseUint(idItem, 32)
+	if err != nil {
+		c.Data["json"] = "user not found"
+	} else {
+		items := u.ItemsUser
+		for _, it := range items {
+			if it.ID == uintID {
+				item = it
+			}
+		}
+	}
+	return item
 }
 
 // PutItemDebug get a user
@@ -228,6 +252,23 @@ func (c *UserController) PutPeticioRadiDebug() {
 // PutPeticioUsuari get a user
 func (c *UserController) PutPeticioUsuari() {
 	//fer una peticio especifica a un usuari
+	token := c.GetString("token")
+	iduser, _ := DecodeToken(token)
+	userto := c.GetString("userTo")
+	itemId := c.GetString("itemId")
+	u, _ := models.FindUserByID(userto)
+	uPet, _ := models.FindUserByID(iduser)
+	var pet models.Peticio
+	pet.Descripcio = c.GetString("description")
+	pet.IDuser = iduser
+	pet.Name = c.GetString("name")
+	pet.To = userto
+	pet.X = uPet.X
+	pet.Y = uPet.Y
+	pet.ItemID = itemId
+	u.PutPeticio(pet)
+	c.Data["json"] = "ok"
+	c.ServeJSON()
 
 }
 

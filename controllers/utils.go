@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/base64"
 	"fmt"
+	"hash/fnv"
 	"time"
 
 	"github.com/astaxie/beego"
@@ -49,4 +50,11 @@ func EncodeID64(email, name, surname string) string {
 	msg := email + name + surname
 	encoded := base64.StdEncoding.EncodeToString([]byte(msg))
 	return encoded
+}
+
+// hash hash string
+func hash(s string) uint32 {
+	h := fnv.New32a()
+	h.Write([]byte(s))
+	return h.Sum32()
 }
