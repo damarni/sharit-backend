@@ -77,7 +77,6 @@ func (c *UserController) EditProfile() {
 		fmt.Println("error al fer update")
 	} else {
 		fmt.Println("update ok")
-
 	}
 	// c.ServeJSON()
 }
@@ -262,18 +261,21 @@ func (c *UserController) GetPeticionsUsuari() {
 
 // PutFavourite put a favourite to a user
 func (c *UserController) PutFavourite() {
-	objecte := c.GetString("idItem")
+	iditem := c.GetString("idItem")
+	idowner := c.GetString("idowner")
 	token := c.GetString("token")
 	idusuari, err := DecodeToken(token)
-	var f models.Fav
-	f.IDuser = idusuari
-	f.IDitem = objecte
-	//u, err := models.FindUserByID(idusuari)
+	//buscar owner
+	o, err := models.FindUserByID(idowner)
+	//buscar objecte dins owner
+	item, err := models.FindFavouriteByID(iditem, o)
+	//put objecte a usuari
+	u, err := models.FindUserByID(idusuari)
 	if err != nil {
 		c.Data["json"] = "error user not found"
 	} else {
-		f.Create()
-		c.Data["json"] = f
+		u.PutFavouriteModel(item)
+		c.Data["json"] = u
 	}
 	c.ServeJSON()
 }
