@@ -116,7 +116,7 @@ func (c *UserController) PutItem() {
 	name := c.GetString("name")
 	description := c.GetString("description")
 	stars := "0"
-	image := "image"
+	image := c.GetString("image")
 	token := c.GetString("token")
 	iduser, err := DecodeToken(token)
 	var i models.Item
