@@ -64,12 +64,15 @@ func FindFavouriteByID(iditem string, u *User) (Item, error) {
 
 	p := 0
 
-	for( p < len(u.FavUser)) {
-		if( u.FavUser[p].ID == iditem) i := u.FavUser[p]
-		else ++p
+	for p < len(u.FavUser) {
+		if u.FavUser[p].IDitem == iditem {
+			i := u.FavUser[p]
+			return i, err
+		}
+		p += p
 	}
 
-	return i, err
+	//	return i, err
 
 }
 
