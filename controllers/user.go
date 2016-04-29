@@ -268,13 +268,13 @@ func (c *UserController) PutFavourite() {
 	//buscar owner
 	o, err := models.FindUserByID(idowner)
 	//buscar objecte dins owner
-	item, err := models.FindFavouriteByID(iditem, o)
+	item, err := o.FindFavouriteByID(iditem)
 	//put objecte a usuari
 	u, err := models.FindUserByID(idusuari)
 	if err != nil {
 		c.Data["json"] = "error user not found"
 	} else {
-		u.PutFavouriteModel(item)
+		u.PutFavouriteModel(item, idowner)
 		c.Data["json"] = u
 	}
 	c.ServeJSON()

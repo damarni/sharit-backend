@@ -3,6 +3,7 @@ package models
 import (
 	//"github.com/novikk/redline/models/mongo"
 
+	"errors"
 	"sharit-backend/models"
 	"sharit-backend/models/mongo"
 
@@ -54,25 +55,17 @@ func FindUserByID(id string) (User, error) {
 }
 
 //FindFavouriteByID returns de favourite with the id idItem
-func FindFavouriteByID(iditem string, u *User) (Item, error) {
-	db := mongo.Conn()
-	defer db.Close()
-	c := db.DB(beego.AppConfig.String("database")).C("users")
-
-	err := c.Find(bson.M{"iduser": id}).One(&u)
-	var i models.Item
-
-	p := 0
-
-	for p < len(u.FavUser) {
-		if u.FavUser[p].IDitem == iditem {
-			i := u.FavUser[p]
-			return i, err
+func (u *User) FindFavouriteByID(iditem string) (Item, error) {
+	var itemaux Item
+	var err error
+	for _, fav := range u.ItemsUser {
+		if fav.ID.String() == iditem {
+			itemaux = fav
+			return fav, nil
 		}
-		p += p
 	}
-
-	//	return i, err
+	err = errors.New("no item found")
+	return itemaux, err
 
 }
 
@@ -105,10 +98,13 @@ func (u *User) PutItemModel(i Item) error {
 }
 
 // PutFavouriteModel put favourite on a user array FavUser
-func (u *User) PutFavouriteModel(i Item) error {
+func (u *User) PutFavouriteModel(i Item, idowner string) error {
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("users")
-	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"favuser": i}})
+	var f models.Fav
+	f.IDuser = idowner
+	f.IDitem = i.ID
+	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"favuser": f}})
 	return err
 }
