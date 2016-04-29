@@ -4,6 +4,7 @@ import (
 	//"github.com/novikk/redline/models/mongo"
 
 	"errors"
+	"fmt"
 	"sharit-backend/models/mongo"
 	"strconv"
 
@@ -38,6 +39,7 @@ func (u *User) Create() error {
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("users")
 	err := c.Insert(u)
+	fmt.Println(u)
 	return err
 }
 
@@ -125,4 +127,36 @@ func (u *User) PutFavouriteModel(i Item, idowner string) error {
 	f.IDitem = strconv.Itoa(int(i.ID))
 	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"favuser": f}})
 	return err
+}
+
+// GetUsersRadi returns a user found by steamid
+func GetUsersRadi(x, y int) (Users, error) {
+	var usrs Users
+
+	db := mongo.Conn()
+	defer db.Close()
+	radi, _ := beego.AppConfig.Int("radi")
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+	err := c.Find(
+		bson.M{"x": bson.M{"$lt": x + radi}},
+	).All(&usrs)
+	fmt.Println(usrs)
+	return usrs, err
+}
+
+// GetItemsRadi returns a user found by steamid
+func GetItemsRadi(x, y int) (Items, error) {
+	var itms Items
+
+	usrs, err := GetUsersRadi(x, y)
+	if err == nil {
+		fmt.Println("error al get items")
+	} else {
+		for _, usr := range usrs {
+			itms = append(itms, usr.ItemsUser...)
+		}
+		return itms, err
+	}
+	return itms, err
+
 }

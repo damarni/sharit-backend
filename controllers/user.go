@@ -32,6 +32,10 @@ func (c *UserController) Register() {
 	u.Pass = pass
 	u.Name = name
 	u.Stars = stars
+	coordx, _ := c.GetInt("X")
+	coordy, _ := c.GetInt("Y")
+	u.X = coordx
+	u.Y = coordy
 	u.Token, _ = EncodeToken(u.IDuser, pass)
 	u.Create()
 
@@ -135,6 +139,7 @@ func (c *UserController) PutItem() {
 	if err != nil {
 		c.Data["json"] = "user not found"
 	} else {
+		fmt.Println("ok item")
 		u.PutItemModel(i)
 		c.Data["json"] = u
 	}
@@ -154,6 +159,24 @@ func (c *UserController) GetItems() {
 	}
 	c.ServeJSON()
 
+}
+
+// GetItemsRadi return user items
+func (c *UserController) GetItemsRadi() {
+	token := c.GetString("token")
+	iduser, _ := DecodeToken(token)
+	u, err := models.FindUserByID(iduser)
+	fmt.Println(iduser)
+	if err == nil {
+		items, err := models.GetItemsRadi(u.X, u.Y)
+		if err == nil {
+			c.Data["json"] = items
+			c.ServeJSON()
+		}
+	} else {
+		c.Data["json"] = "error a les petcions"
+		c.ServeJSON()
+	}
 }
 
 // GetItem return user items
