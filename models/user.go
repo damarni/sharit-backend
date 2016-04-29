@@ -4,8 +4,8 @@ import (
 	//"github.com/novikk/redline/models/mongo"
 
 	"errors"
-	"sharit-backend/models"
 	"sharit-backend/models/mongo"
+	"strconv"
 
 	"github.com/astaxie/beego"
 
@@ -59,7 +59,7 @@ func (u *User) FindFavouriteByID(iditem string) (Item, error) {
 	var itemaux Item
 	var err error
 	for _, fav := range u.ItemsUser {
-		if fav.ID.String() == iditem {
+		if strconv.Itoa(int(fav.ID)) == iditem {
 			itemaux = fav
 			return fav, nil
 		}
@@ -120,9 +120,9 @@ func (u *User) PutFavouriteModel(i Item, idowner string) error {
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("users")
-	var f models.Fav
+	var f Fav
 	f.IDuser = idowner
-	f.IDitem = i.ID
+	f.IDitem = strconv.Itoa(int(i.ID))
 	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"favuser": f}})
 	return err
 }
