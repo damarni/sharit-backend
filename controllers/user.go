@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"sharit-backend/models"
 	"strconv"
+	"time"
 )
 
 // UserController does everything related to steam login
@@ -124,12 +125,13 @@ func (c *UserController) PutItem() {
 	token := c.GetString("token")
 	iduser, err := DecodeToken(token)
 	var i models.Item
-	stt := token + name
+	stt := token + name + time.Now().String()
 	i.ID = hash(stt)
 	i.ItemName = name
 	i.Description = description
 	i.Stars = stars
 	i.Image = image
+	i.LastSharit = time.Now()
 	u, err := models.FindUserByID(iduser)
 	if err != nil {
 		c.Data["json"] = "user not found"
