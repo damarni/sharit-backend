@@ -4,6 +4,7 @@ import (
 	"sharit-backend/controllers"
 
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/context"
 )
 
 func init() {
@@ -16,14 +17,27 @@ func init() {
 	beego.Router("/user/registerdebug", &controllers.UserController{}, "get:RegisterDebug")
 	beego.Router("/user/getPeticionsRadi", &controllers.UserController{}, "get:GetPeticionsRadiUser")
 	beego.Router("/user/putPeticioRadi", &controllers.UserController{}, "get:PutPeticioRadi")
-	beego.Router("/user/getPeticionsRadi", &controllers.UserController{}, "get:GetPeticionsUsuari")
-	beego.Router("/user/putPeticioRadi", &controllers.UserController{}, "get:PutPeticioUsuari")
-	beego.Router("/user/putItem", &controllers.UserController{}, "get:PutItem")
+	beego.Router("/user/getPeticionsUsuari", &controllers.UserController{}, "get:GetPeticionsUsuari")
+	beego.Router("/user/putPeticioUsuari", &controllers.UserController{}, "get:PutPeticioUsuari")
+	beego.Router("/user/putItem", &controllers.UserController{}, "post:PutItem")
 	beego.Router("/user/getItems", &controllers.UserController{}, "get:GetItems")
+
+	beego.Router("/room/create", &controllers.SocketController{}, "get:CreateRoom")
+	beego.Router("/room/findRooms", &controllers.SocketController{}, "get:GetRooms")
+	beego.Router("/room/findRoom", &controllers.SocketController{}, "get:GetRoom")
+	beego.Router("/room/putMessage", &controllers.SocketController{}, "get:PutMessage")
 
 	beego.Router("/item/put", &controllers.ItemController{}, "get:Put")
 	beego.Router("/item/getAll", &controllers.ItemController{}, "get:GetAll")
 	beego.Router("/item/getAllRadi", &controllers.ItemController{}, "get:GetAllRadi")
 
-	beego.Router("/user/putFavourite", &controllers.ItemController{}, "get:PutFavourite")
+	//beego.Router("/user/putFavourite", &controllers.ItemController{}, "get:PutFavourite")
+	//falta getFavourite
+	//beego.Router("/user/putCoordenades", &controllers.ItemController{}, "get:PutCoordenades")
+
+	var FilterCORS = func(ctx *context.Context) {
+		ctx.Output.Header("Access-Control-Allow-Origin", "*")
+	}
+
+	beego.InsertFilter("*", beego.BeforeRouter, FilterCORS)
 }

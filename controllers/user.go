@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"sharit-backend/models"
+	"strconv"
+	"time"
 )
 
 // UserController does everything related to steam login
@@ -62,6 +64,7 @@ func (c *UserController) EditProfile() {
 	myToken := c.GetString("token")
 	id, err := DecodeToken(myToken)
 	if err != nil {
+		fmt.Println(err)
 		c.Data["json"] = "error token id"
 		c.ServeJSON()
 	}
@@ -78,7 +81,9 @@ func (c *UserController) EditProfile() {
 	} else {
 		fmt.Println("update ok")
 	}
-	// c.ServeJSON()
+
+	c.Data["json"] = "ok"
+	c.ServeJSON()
 }
 
 // GetAll get all the users
@@ -115,14 +120,17 @@ func (c *UserController) PutItem() {
 	name := c.GetString("name")
 	description := c.GetString("description")
 	stars := "0"
-	//image = ?
+	image := c.GetString("image")
 	token := c.GetString("token")
 	iduser, err := DecodeToken(token)
 	var i models.Item
+	stt := token + name + time.Now().String()
+	i.ID = hash(stt)
 	i.ItemName = name
 	i.Description = description
 	i.Stars = stars
-
+	i.Image = image
+	i.LastSharit = time.Now()
 	u, err := models.FindUserByID(iduser)
 	if err != nil {
 		c.Data["json"] = "user not found"
@@ -148,19 +156,40 @@ func (c *UserController) GetItems() {
 
 }
 
+// GetItem return user items
+func (c *UserController) GetItem() models.Item {
+	token := c.GetString("token")
+	iduser, _ := DecodeToken(token)
+	idItem := c.GetString("idItem")
+	u, err := models.FindUserByID(iduser)
+	var item models.Item
+	uintID, _ := strconv.ParseUint(idItem, 10, 32)
+	if err != nil {
+		c.Data["json"] = "user not found"
+	} else {
+		items := u.ItemsUser
+		for _, it := range items {
+			if it.ID == uintID {
+				item = it
+			}
+		}
+	}
+	return item
+}
+
 // PutItemDebug get a user
 func (c *UserController) PutItemDebug() {
 	//rebre el token i verificar si es coorrecte
 	name := c.GetString("name")
 	description := c.GetString("description")
 	stars := "0"
-	//image = ?
+	image := c.GetString("image")
 	iduser := c.GetString("id")
 	var i models.Item
 	i.ItemName = name
 	i.Description = description
 	i.Stars = stars
-
+	i.Image = image
 	u, err := models.FindUserByID(iduser)
 	if err != nil {
 		c.Data["json"] = "user not found"
@@ -224,6 +253,23 @@ func (c *UserController) PutPeticioRadiDebug() {
 // PutPeticioUsuari get a user
 func (c *UserController) PutPeticioUsuari() {
 	//fer una peticio especifica a un usuari
+	token := c.GetString("token")
+	iduser, _ := DecodeToken(token)
+	userto := c.GetString("userTo")
+	itemId := c.GetString("itemId")
+	u, _ := models.FindUserByID(userto)
+	uPet, _ := models.FindUserByID(iduser)
+	var pet models.Peticio
+	pet.Descripcio = c.GetString("description")
+	pet.IDuser = iduser
+	pet.Name = c.GetString("name")
+	pet.To = userto
+	pet.X = uPet.X
+	pet.Y = uPet.Y
+	pet.ItemID = itemId
+	u.PutPeticio(pet)
+	c.Data["json"] = "ok"
+	c.ServeJSON()
 
 }
 
@@ -280,6 +326,7 @@ func (c *UserController) PutFavourite() {
 	c.ServeJSON()
 }
 
+//GetFavouritesUsuari get the user favourites
 func (c *UserController) GetFavouritesUsuari() {
 	token := c.GetString("token")
 	iduser, err := DecodeToken(token)
@@ -291,5 +338,26 @@ func (c *UserController) GetFavouritesUsuari() {
 	} else {
 		c.Data["json"] = "error a les petcions"
 		c.ServeJSON()
+	}
+}
+
+//PutCoordenades put cordenades for the user
+func (c *UserController) PutCoordenades() {
+	myToken := c.GetString("token")
+	id, err := DecodeToken(myToken)
+	if err != nil {
+		c.Data["json"] = "error token id"
+		c.ServeJSON()
+	}
+	u, err := models.FindUserByID(id)
+	coordx, _ := c.GetInt("X")
+	coordy, _ := c.GetInt("Y")
+	u.X = coordx
+	u.Y = coordy
+	err = u.UpdateUserCoords()
+	if err != nil {
+		fmt.Println("error al fer update")
+	} else {
+		fmt.Println("update ok")
 	}
 }
