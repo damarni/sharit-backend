@@ -20,7 +20,10 @@ func (c *UserController) Login() {
 	u, err := models.FindUserByMail(mail)
 	if err == nil {
 		if pass == u.Pass {
-			c.Data["json"] = u.Token
+			var r reg
+			r.Token = u.Token
+			r.Iduser = u.IDuser
+			c.Data["json"] = r
 			c.ServeJSON()
 		} else {
 			c.Data["json"] = "wrong pass"
