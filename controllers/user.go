@@ -15,7 +15,27 @@ type UserController struct {
 
 // Login user
 func (c *UserController) Login() {
+	mail := c.GetString("mail")
+	pass := c.GetString("pass")
+	u, err := models.FindUserByMail(mail)
+	if err == nil {
+		if pass == u.Pass {
+			c.Data["json"] = u.Token
+			c.ServeJSON()
+		} else {
+			c.Data["json"] = "wrong pass"
+			c.ServeJSON()
+		}
 
+	} else {
+		c.Data["json"] = "mail not registered"
+		c.ServeJSON()
+	}
+}
+
+type reg struct {
+	Token  string `bson:"token,omitempty"`
+	Iduser string `bson:"iduser,omitempty"`
 }
 
 // Register register
@@ -38,8 +58,10 @@ func (c *UserController) Register() {
 	u.Y = coordy
 	u.Token, _ = EncodeToken(u.IDuser, pass)
 	u.Create()
-
-	c.Data["json"] = "{\"token\":" + u.Token + ", \"iduser\":" + u.IDuser + "}"
+	var r reg
+	r.Token = u.Token
+	r.Iduser = u.IDuser
+	c.Data["json"] = r
 	c.ServeJSON()
 }
 

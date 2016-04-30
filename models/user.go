@@ -56,6 +56,19 @@ func FindUserByID(id string) (User, error) {
 	return u, err
 }
 
+// FindUserByMail returns a user found by steamid
+func FindUserByMail(mail string) (User, error) {
+	var u User
+
+	db := mongo.Conn()
+	defer db.Close()
+
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+	err := c.Find(bson.M{"mail": mail}).One(&u)
+
+	return u, err
+}
+
 //FindFavouriteByID returns de favourite with the id idItem
 func (u *User) FindFavouriteByID(iditem string) (Item, error) {
 	var itemaux Item
