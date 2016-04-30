@@ -64,7 +64,7 @@ func FindUserByMail(mail string) (User, error) {
 	defer db.Close()
 
 	c := db.DB(beego.AppConfig.String("database")).C("users")
-	err := c.Find(bson.M{"mail": mail}).One(&u)
+	err := c.Find(bson.M{"email": mail}).One(&u)
 
 	return u, err
 }
