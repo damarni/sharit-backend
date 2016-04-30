@@ -39,7 +39,7 @@ func (c *UserController) Register() {
 	u.Token, _ = EncodeToken(u.IDuser, pass)
 	u.Create()
 
-	c.Data["json"] = "{\"Token\":" + u.Token + ", \"IDuser\":" + u.IDuser + "}"
+	c.Data["json"] = "{\"token\":" + u.Token + ", \"iduser\":" + u.IDuser + "}"
 	c.ServeJSON()
 }
 
