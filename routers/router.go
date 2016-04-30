@@ -11,6 +11,7 @@ func init() {
 	beego.Router("/", &controllers.MainController{})
 	beego.Router("/All", &controllers.MainController{}, "get:All")
 	beego.Router("/user/register", &controllers.UserController{}, "get:Register")
+	beego.Router("/user/login", &controllers.UserController{}, "get:Login")
 	beego.Router("/user/getAll", &controllers.UserController{}, "get:GetAll")
 	beego.Router("/user/get", &controllers.UserController{}, "get:Get")
 	beego.Router("/user/updateUser", &controllers.UserController{}, "get:EditProfile")
