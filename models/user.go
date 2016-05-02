@@ -117,7 +117,11 @@ func (u *User) PutItemModel(i Item) error {
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("users")
+	fmt.Println(u.IDuser)
+	fmt.Println(i)
 	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"itemsUser": i}})
+	fmt.Println(err)
+
 	return err
 }
 
@@ -151,9 +155,21 @@ func GetUsersRadi(x, y int) (Users, error) {
 	radi, _ := beego.AppConfig.Int("radi")
 	c := db.DB(beego.AppConfig.String("database")).C("users")
 	err := c.Find(
-		bson.M{"x": bson.M{"$lt": x + radi}},
-	).All(&usrs)
+		bson.M{"$and": []interface{}{
+			bson.M{
+				"$and": []interface{}{
+					bson.M{"x": bson.M{"$lt": x + radi}},
+					bson.M{"x": bson.M{"$gt": x - radi}}}},
+			bson.M{
+				"$and": []interface{}{
+					bson.M{"y": bson.M{"$lt": x + radi}},
+					bson.M{"y": bson.M{"$gt": x - radi}}}},
+		}}).All(&usrs)
+	fmt.Println("----------------------")
+
 	fmt.Println(usrs)
+	fmt.Println("----------------------")
+
 	return usrs, err
 }
 
@@ -162,7 +178,7 @@ func GetItemsRadi(x, y int) (Items, error) {
 	var itms Items
 
 	usrs, err := GetUsersRadi(x, y)
-	if err == nil {
+	if err != nil {
 		fmt.Println("error al get items")
 	} else {
 		for _, usr := range usrs {

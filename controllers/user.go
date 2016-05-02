@@ -55,8 +55,8 @@ func (c *UserController) Register() {
 	u.Pass = pass
 	u.Name = name
 	u.Stars = stars
-	coordx, _ := c.GetInt("X")
-	coordy, _ := c.GetInt("Y")
+	coordx := 1
+	coordy := 1
 	u.X = coordx
 	u.Y = coordy
 	u.Token, _ = EncodeToken(u.IDuser, pass)
@@ -117,7 +117,9 @@ func (c *UserController) EditProfile() {
 
 // GetAll get all the users
 func (c *UserController) GetAll() {
-	users, _ := models.GetAllUsers()
+	fmt.Println("getall")
+	users, err := models.GetAllUsers()
+	fmt.Println(err)
 	_, er := json.Marshal(users)
 	if er != nil {
 		//
@@ -153,8 +155,8 @@ func (c *UserController) PutItem() {
 	token := c.GetString("token")
 	iduser, err := DecodeToken(token)
 	var i models.Item
-	stt := token + name + time.Now().String()
-	i.ID = hash(stt)
+	stt := token + name + image
+	i.Idd = stt
 	i.ItemName = name
 	i.Description = description
 	i.Stars = stars
