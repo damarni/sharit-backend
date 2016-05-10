@@ -147,15 +147,16 @@ func (c *UserController) Get() {
 
 // PutItem get a user
 func (c *UserController) PutItem() {
+
 	//rebre el token i verificar si es coorrecte
 	name := c.GetString("name")
 	description := c.GetString("description")
 	stars := "0"
 	image := c.GetString("image")
-	token := c.GetString("token")
+	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
 	var i models.Item
-	stt := token + name + image
+	stt := token + name + time.Now().String()
 	i.Idd = stt
 	i.ItemName = name
 	i.Description = description

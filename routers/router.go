@@ -20,7 +20,7 @@ func init() {
 	beego.Router("/user/putPeticioRadi", &controllers.UserController{}, "get:PutPeticioRadi")
 	beego.Router("/user/getPeticionsUsuari", &controllers.UserController{}, "get:GetPeticionsUsuari")
 	beego.Router("/user/putPeticioUsuari", &controllers.UserController{}, "get:PutPeticioUsuari")
-	beego.Router("/user/putItem", &controllers.UserController{}, "get:PutItem")
+	beego.Router("/user/putItem", &controllers.UserController{}, "post:PutItem")
 	beego.Router("/user/getItems", &controllers.UserController{}, "get:GetItems")
 	beego.Router("/user/getItemsRadi", &controllers.UserController{}, "get:GetItemsRadi")
 
