@@ -183,6 +183,25 @@ func (c *UserController) PutItem() {
 
 }
 
+// DeleteItem get a user
+func (c *UserController) DeleteItem() {
+
+	idItem := c.GetString("idItem")
+	token := c.Ctx.Input.Header("token")
+	iduser, err := DecodeToken(token)
+
+	u, err := models.FindUserByID(iduser)
+	if err != nil {
+		c.Data["json"] = "user not found"
+	} else {
+		fmt.Println("ok item")
+		u.DeleteItemModel(idItem)
+		c.Data["json"] = u
+	}
+	c.ServeJSON()
+
+}
+
 // GetItems return user items
 func (c *UserController) GetItems() {
 	token := c.Ctx.Input.Header("token")

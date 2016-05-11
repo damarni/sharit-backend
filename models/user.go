@@ -142,6 +142,17 @@ func (u *User) PutItemModel(i Item) error {
 	return err
 }
 
+// DeleteItemModell put item on a user array
+func (u *User) DeleteItemModel(id string) error {
+	db := mongo.Conn()
+	defer db.Close()
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$pull": bson.M{"itemsUser": bson.M{"idd": id}}})
+	fmt.Println(err)
+	return err
+
+}
+
 // PutPeticio updates user profile
 func (u *User) PutPeticio(pet Peticio) error {
 	fmt.Println(pet)
