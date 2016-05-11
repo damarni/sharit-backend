@@ -154,7 +154,7 @@ func (c *UserController) PutItem() {
 	iduser, err := DecodeToken(token)
 	var i models.Item
 	stt := token + name + time.Now().String()
-	i.Idd = stt
+	i.Idd = EncodeMsg(stt)
 	i.ItemName = name
 	i.Description = description
 	i.Stars = stars
@@ -254,7 +254,7 @@ func (c *UserController) PutPeticioRadi() {
 	u, err := models.FindUserByID(iduser)
 	var p models.Peticio
 	p.IDuser = iduser
-	p.ID = iduser + time.Now().String()
+	p.ID = EncodeMsg(iduser + time.Now().String())
 	p.Name = name
 	p.To = ""
 	p.Descripcio = description
@@ -264,7 +264,7 @@ func (c *UserController) PutPeticioRadi() {
 		c.Data["json"] = "user not found"
 	} else {
 		p.Create()
-		c.Data["json"] = p
+		c.Data["json"] = "ok"
 	}
 	c.ServeJSON()
 }
@@ -292,7 +292,7 @@ func (c *UserController) AcceptRadiPetition() {
 			fmt.Println("no user out found")
 		}
 		models.DeletePeticioByID(idpet)
-		c.Data["json"] = p
+		c.Data["json"] = "ok"
 
 	}
 	c.ServeJSON()
@@ -320,7 +320,7 @@ func (c *UserController) AcceptUserPetition() {
 				fmt.Println("no user out found")
 			}
 			//falta eliminar peticio de la peticionsusers
-			c.Data["json"] = p
+			c.Data["json"] = "ok"
 		} else {
 			fmt.Print("error al buscar peticio")
 		}
@@ -340,7 +340,7 @@ func (c *UserController) PutPeticioUsuari() {
 
 	uPet, _ := models.FindUserByID(iduser)
 	var pet models.Peticio
-	pet.ID = iduser + time.Now().String()
+	pet.ID = EncodeMsg(iduser + time.Now().String())
 	pet.Descripcio = c.GetString("description")
 	pet.IDuser = iduser
 	pet.To = userto
@@ -401,7 +401,7 @@ func (c *UserController) PutFavourite() {
 		c.Data["json"] = "error user not found"
 	} else {
 		u.PutFavouriteModel(item, idowner)
-		c.Data["json"] = u
+		c.Data["json"] = "ok"
 	}
 	c.ServeJSON()
 }
@@ -439,5 +439,7 @@ func (c *UserController) PutCoordenades() {
 		fmt.Println("error al fer update")
 	} else {
 		fmt.Println("update ok")
+		c.Data["json"] = "ok"
+		c.ServeJSON()
 	}
 }

@@ -50,6 +50,12 @@ func EncodeID64(email, name, surname string) string {
 	return encoded
 }
 
+//EncodeID64 create id for a user
+func EncodeMsg(msg string) string {
+	encoded := base64.StdEncoding.EncodeToString([]byte(msg))
+	return encoded
+}
+
 // hash hash string
 func hash(s string) uint64 {
 	h := fnv.New64a()
