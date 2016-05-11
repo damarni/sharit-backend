@@ -49,41 +49,30 @@ func (c *UserController) Register() {
 	stars := "0"
 	mail := c.GetString("mail")
 	pass := c.GetString("pass")
-	var u models.User
-	u.IDuser = EncodeID64(mail, name, surname)
-	u.Email = mail
-	u.Pass = pass
-	u.Name = name
-	u.Stars = stars
-	coordx := 1
-	coordy := 1
-	u.X = coordx
-	u.Y = coordy
-	u.Token, _ = EncodeToken(u.IDuser, pass)
-	u.Create()
-	var r reg
-	r.Token = u.Token
-	r.Iduser = u.IDuser
-	c.Data["json"] = r
-	c.ServeJSON()
-}
+	_, err := models.FindUserByID(EncodeID64(mail, name, surname))
+	if err != nil {
+		var u models.User
+		u.IDuser = EncodeID64(mail, name, surname)
+		u.Email = mail
+		u.Pass = pass
+		u.Name = name
+		u.Stars = stars
+		coordx := 1
+		coordy := 1
+		u.X = coordx
+		u.Y = coordy
+		u.Token, _ = EncodeToken(u.IDuser, pass)
+		u.Create()
+		var r reg
+		r.Token = u.Token
+		r.Iduser = u.IDuser
+		c.Data["json"] = r
+		c.ServeJSON()
+	} else {
+		c.Data["json"] = "mail used"
+		c.ServeJSON()
+	}
 
-// RegisterDebug register
-func (c *UserController) RegisterDebug() {
-
-	name := c.GetString("name")
-	surname := c.GetString("surname")
-	stars := "0"
-	mail := c.GetString("mail")
-	pass := c.GetString("pass")
-	var u models.User
-	u.IDuser = EncodeID64(mail, name, surname)
-	u.Email = mail
-	u.Pass = pass
-	u.Name = name
-	u.Stars = stars
-	u.Create()
-	c.ServeJSON()
 }
 
 //EditProfile : only can update email and password
@@ -284,6 +273,7 @@ func (c *UserController) PutPeticioRadi() {
 func (c *UserController) AcceptRadiPetition() {
 	//rebre el token i verificar si es coorrecte
 	idpet := c.GetString("idpeticio")
+	iditem := c.GetString("iditem")
 	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
 	u, err := models.FindUserByID(iduser)
@@ -293,6 +283,7 @@ func (c *UserController) AcceptRadiPetition() {
 		c.Data["json"] = "Peticio ja acceptada"
 	} else {
 		p.To = iduser
+		p.ItemID = iditem
 		u.PutPeticioIn(p)
 		uPet, _ := models.FindUserByID(p.IDuser)
 		if err == nil {
