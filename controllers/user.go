@@ -90,8 +90,8 @@ func (c *UserController) RegisterDebug() {
 func (c *UserController) EditProfile() {
 
 	mail := c.GetString("mail")
-	myToken := c.GetString("token")
-	id, err := DecodeToken(myToken)
+	token := c.Ctx.Input.Header("token")
+	id, err := DecodeToken(token)
 	if err != nil {
 		fmt.Println(err)
 		c.Data["json"] = "error token id"
@@ -133,15 +133,23 @@ func (c *UserController) GetAll() {
 // Get get a user
 func (c *UserController) Get() {
 
-	id := c.GetString("id")
-
-	u, err := models.FindUserByID(id)
-	if err != nil {
-		c.Data["json"] = "user not found"
+	token := c.Ctx.Input.Header("token")
+	_, err := DecodeToken(token)
+	if err == nil {
+		id := c.GetString("id")
+		fmt.Println(id)
+		u, err := models.FindUserByID(id)
+		if err != nil {
+			fmt.Println(err)
+			c.Data["json"] = "user not found"
+		} else {
+			c.Data["json"] = u
+		}
+		c.ServeJSON()
 	} else {
-		c.Data["json"] = u
+		c.Data["json"] = "token fail"
+		c.ServeJSON()
 	}
-	c.ServeJSON()
 
 }
 
@@ -177,7 +185,7 @@ func (c *UserController) PutItem() {
 
 // GetItems return user items
 func (c *UserController) GetItems() {
-	token := c.GetString("token")
+	token := c.Ctx.Input.Header("token")
 	iduser, _ := DecodeToken(token)
 	u, err := models.FindUserByID(iduser)
 	if err != nil {
@@ -191,7 +199,7 @@ func (c *UserController) GetItems() {
 
 // GetItemsRadi return user items
 func (c *UserController) GetItemsRadi() {
-	token := c.GetString("token")
+	token := c.Ctx.Input.Header("token")
 	iduser, _ := DecodeToken(token)
 	u, err := models.FindUserByID(iduser)
 	fmt.Println(iduser)
@@ -209,7 +217,7 @@ func (c *UserController) GetItemsRadi() {
 
 // GetItem return user items
 func (c *UserController) GetItem() models.Item {
-	token := c.GetString("token")
+	token := c.Ctx.Input.Header("token")
 	iduser, _ := DecodeToken(token)
 	idItem := c.GetString("idItem")
 	u, err := models.FindUserByID(iduser)
@@ -258,7 +266,7 @@ func (c *UserController) PutPeticioRadi() {
 	//rebre el token i verificar si es coorrecte
 	name := c.GetString("name")
 	description := c.GetString("description")
-	token := c.GetString("token")
+	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
 	u, err := models.FindUserByID(iduser)
 	var p models.Peticio
@@ -304,16 +312,16 @@ func (c *UserController) PutPeticioRadiDebug() {
 // PutPeticioUsuari get a user
 func (c *UserController) PutPeticioUsuari() {
 	//fer una peticio especifica a un usuari
-	token := c.GetString("token")
+	token := c.Ctx.Input.Header("token")
 	iduser, _ := DecodeToken(token)
 	userto := c.GetString("userTo")
 	itemId := c.GetString("itemId")
 	u, _ := models.FindUserByID(userto)
+
 	uPet, _ := models.FindUserByID(iduser)
 	var pet models.Peticio
 	pet.Descripcio = c.GetString("description")
 	pet.IDuser = iduser
-	pet.Name = c.GetString("name")
 	pet.To = userto
 	pet.X = uPet.X
 	pet.Y = uPet.Y
@@ -326,7 +334,7 @@ func (c *UserController) PutPeticioUsuari() {
 
 // GetPeticionsRadiUser get a user
 func (c *UserController) GetPeticionsRadiUser() {
-	token := c.GetString("token")
+	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
 	u, err := models.FindUserByID(iduser)
 	if err == nil {
@@ -343,7 +351,7 @@ func (c *UserController) GetPeticionsRadiUser() {
 
 // GetPeticionsUsuari get a user
 func (c *UserController) GetPeticionsUsuari() {
-	token := c.GetString("token")
+	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
 	u, err := models.FindUserByID(iduser)
 	if err == nil {
@@ -360,7 +368,7 @@ func (c *UserController) GetPeticionsUsuari() {
 func (c *UserController) PutFavourite() {
 	iditem := c.GetString("idItem")
 	idowner := c.GetString("idowner")
-	token := c.GetString("token")
+	token := c.Ctx.Input.Header("token")
 	idusuari, err := DecodeToken(token)
 	//buscar owner
 	o, err := models.FindUserByID(idowner)
@@ -379,7 +387,7 @@ func (c *UserController) PutFavourite() {
 
 //GetFavouritesUsuari get the user favourites
 func (c *UserController) GetFavouritesUsuari() {
-	token := c.GetString("token")
+	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
 	u, err := models.FindUserByID(iduser)
 	if err == nil {
@@ -394,8 +402,8 @@ func (c *UserController) GetFavouritesUsuari() {
 
 //PutCoordenades put cordenades for the user
 func (c *UserController) PutCoordenades() {
-	myToken := c.GetString("token")
-	id, err := DecodeToken(myToken)
+	token := c.Ctx.Input.Header("token")
+	id, err := DecodeToken(token)
 	if err != nil {
 		c.Data["json"] = "error token id"
 		c.ServeJSON()

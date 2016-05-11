@@ -127,10 +127,12 @@ func (u *User) PutItemModel(i Item) error {
 
 // PutPeticio updates user profile
 func (u *User) PutPeticio(pet Peticio) error {
+	fmt.Println(pet)
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("users")
 	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"peticions": pet}})
+	fmt.Println(err)
 	return err
 }
 
@@ -176,6 +178,8 @@ func GetUsersRadi(x, y int) (Users, error) {
 // GetItemsRadi returns a user found by steamid
 func GetItemsRadi(x, y int) (Items, error) {
 	var itms Items
+	fmt.Println(x)
+	fmt.Println(y)
 
 	usrs, err := GetUsersRadi(x, y)
 	if err != nil {

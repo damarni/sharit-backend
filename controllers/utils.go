@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"hash/fnv"
-	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/dgrijalva/jwt-go"
@@ -29,7 +28,6 @@ func EncodeToken(userID, pass string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	token.Claims["userid"] = userID
 
-	token.Claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 	fmt.Println(beego.AppConfig.String("privateKey"))
 	key := []byte(beego.AppConfig.String("privateKey"))
 	tokenString, err := token.SignedString(key)
