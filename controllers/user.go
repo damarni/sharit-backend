@@ -285,6 +285,30 @@ func (c *UserController) PutPeticioRadi() {
 	c.ServeJSON()
 }
 
+// AcceptRadiPetition put peticio al radi
+func (c *UserController) AcceptRadiPetition() {
+	//rebre el token i verificar si es coorrecte
+	name := c.GetString("name")
+	description := c.GetString("description")
+	token := c.Ctx.Input.Header("token")
+	iduser, err := DecodeToken(token)
+	u, err := models.FindUserByID(iduser)
+	var p models.Peticio
+	p.IDuser = iduser
+	p.Name = name
+	p.To = ""
+	p.Descripcio = description
+	p.X = u.X
+	p.Y = u.Y
+	if err != nil {
+		c.Data["json"] = "user not found"
+	} else {
+		p.Create()
+		c.Data["json"] = p
+	}
+	c.ServeJSON()
+}
+
 // PutPeticioRadiDebug get a user
 func (c *UserController) PutPeticioRadiDebug() {
 	//rebre el token i verificar si es coorrecte
