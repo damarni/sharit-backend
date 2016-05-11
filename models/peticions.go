@@ -12,7 +12,8 @@ import (
 
 // Peticio is a user :D
 type Peticio struct {
-	ID         bson.ObjectId `bson:"_id,omitempty"`
+	IDmongo    bson.ObjectId `bson:"_id,omitempty"`
+	ID         string        `bson:"id,omitempty"`
 	IDuser     string        `bson:"iduser,omitempty"`
 	Name       string        `bson:"name,omitempty"`
 	To         string        `bson:"to,omitempty"`
@@ -55,4 +56,29 @@ func GetPeticionsRadi(x, y int) (Peticions, error) {
 					bson.M{"y": bson.M{"$gt": x - radi}}}},
 		}}).All(&pets)
 	return pets, err
+}
+
+// FindPeticioByID returns a user found by steamid
+func FindPeticioByID(id string) (Peticio, error) {
+	var p Peticio
+
+	db := mongo.Conn()
+	defer db.Close()
+
+	c := db.DB(beego.AppConfig.String("database")).C("peticions")
+	err := c.Find(bson.M{"id": id}).One(&p)
+
+	return p, err
+}
+
+// FindPeticioByID returns a user found by steamid
+func DeletePeticioByID(id string) error {
+
+	db := mongo.Conn()
+	defer db.Close()
+
+	c := db.DB(beego.AppConfig.String("database")).C("peticions")
+	err := c.Remove(bson.M{"id": id})
+
+	return err
 }

@@ -58,6 +58,21 @@ func FindUserByID(id string) (User, error) {
 	return u, err
 }
 
+// FindPetUserByID returns a user found by steamid
+func FindPetUserByID(id, idpet string) (Peticio, error) {
+	var u User
+
+	db := mongo.Conn()
+	defer db.Close()
+
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+	err := c.Find(bson.M{"$and": []interface{}{
+		bson.M{"iduser": id},
+		bson.M{"peticions": bson.M{"$elemMatch": bson.M{"id": idpet}}}}}).One(&u)
+
+	return u.PeticionsUser[0], err
+}
+
 // FindUserByMail returns a user found by steamid
 func FindUserByMail(mail string) (User, error) {
 	var u User
@@ -134,6 +149,39 @@ func (u *User) PutPeticio(pet Peticio) error {
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("users")
 	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"peticions": pet}})
+	fmt.Println(err)
+	return err
+}
+
+// DeletPeticio updates user profile
+func (u *User) DeletPeticio(pet Peticio) error {
+	fmt.Println(pet)
+	db := mongo.Conn()
+	defer db.Close()
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$pull": bson.M{"peticions": bson.M{"id": pet.ID}}})
+	fmt.Println(err)
+	return err
+}
+
+// PutPeticioIn updates user profile
+func (u *User) PutPeticioIn(pet Peticio) error {
+	fmt.Println(pet)
+	db := mongo.Conn()
+	defer db.Close()
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"peticionsin": pet}})
+	fmt.Println(err)
+	return err
+}
+
+// PutPeticioOuy updates user profile
+func (u *User) PutPeticioOut(pet Peticio) error {
+	fmt.Println(pet)
+	db := mongo.Conn()
+	defer db.Close()
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"peticionsout": pet}})
 	fmt.Println(err)
 	return err
 }
