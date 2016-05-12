@@ -172,6 +172,30 @@ func (c *UserController) DeleteUser() {
 
 }
 
+// DeletePeticio get a user
+func (c *UserController) DeletePeticio() {
+
+	token := c.Ctx.Input.Header("token")
+	_, err := DecodeToken(token)
+	idpet := c.GetString("idPeticio")
+
+	if err == nil {
+
+		err = models.DeletePeticioByID(idpet)
+		if err != nil {
+			fmt.Println(err)
+			c.Data["json"] = "peticio not found"
+		} else {
+			c.Data["json"] = "peticio deleted"
+		}
+		c.ServeJSON()
+	} else {
+		c.Data["json"] = "token fail"
+		c.ServeJSON()
+	}
+
+}
+
 // PutItem get a user
 func (c *UserController) PutItem() {
 
