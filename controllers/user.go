@@ -285,7 +285,7 @@ func (c *UserController) PutPeticio() {
 	description := c.GetString("description")
 
 	if userto == "" {
-		u, err := models.FindUserByID(iduser)
+		u, _ := models.FindUserByID(iduser)
 		var p models.Peticio
 		p.IDuser = iduser
 		p.ID = EncodeMsg(iduser + time.Now().String())
@@ -294,15 +294,12 @@ func (c *UserController) PutPeticio() {
 		p.Descripcio = description
 		p.X = u.X
 		p.Y = u.Y
-		if err != nil {
-			c.Data["json"] = "user not found"
-		} else {
-			p.Create()
-			c.Data["json"] = "ok"
-		}
+		p.Acceptada = false
+		p.Create()
+		c.Data["json"] = "ok"
+
 		c.ServeJSON()
 	} else {
-		u, _ := models.FindUserByID(userto)
 		uPet, _ := models.FindUserByID(iduser)
 		var pet models.Peticio
 		pet.ID = EncodeMsg(iduser + time.Now().String())
@@ -313,7 +310,8 @@ func (c *UserController) PutPeticio() {
 		pet.X = uPet.X
 		pet.Y = uPet.Y
 		pet.ItemID = itemId
-		u.PutPeticio(pet)
+		pet.Acceptada = true
+		pet.Create()
 		c.Data["json"] = "ok"
 		c.ServeJSON()
 	}
@@ -327,7 +325,6 @@ func (c *UserController) AcceptRadiPetition() {
 	iditem := c.GetString("iditem")
 	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
-	u, err := models.FindUserByID(iduser)
 	p, err := models.FindPeticioByID(idpet)
 
 	if err != nil {
@@ -335,46 +332,10 @@ func (c *UserController) AcceptRadiPetition() {
 	} else {
 		p.To = iduser
 		p.ItemID = iditem
-		u.PutPeticioIn(p)
-		uPet, _ := models.FindUserByID(p.IDuser)
-		if err == nil {
-			uPet.PutPeticioOut(p)
-		} else {
-			fmt.Println("no user out found")
-		}
-		models.DeletePeticioByID(idpet)
+		p.Acceptada = true
+		p.UpdatePeticioTo()
+
 		c.Data["json"] = "ok"
-
-	}
-	c.ServeJSON()
-}
-
-// AcceptUserPetition put peticio al radi
-func (c *UserController) AcceptUserPetition() {
-	//rebre el token i verificar si es coorrecte
-	idpet := c.GetString("idpeticio")
-	token := c.Ctx.Input.Header("token")
-	iduser, err := DecodeToken(token)
-	u, err := models.FindUserByID(iduser)
-
-	if err != nil {
-		c.Data["json"] = "Peticio ja acceptada"
-	} else {
-		p, err := models.FindPetUserByID(iduser, idpet)
-		if err == nil {
-			u.PutPeticioIn(p)
-			u.DeletPeticio(p)
-			uPet, _ := models.FindUserByID(p.IDuser)
-			if err == nil {
-				uPet.PutPeticioOut(p)
-			} else {
-				fmt.Println("no user out found")
-			}
-			//falta eliminar peticio de la peticionsusers
-			c.Data["json"] = "ok"
-		} else {
-			fmt.Print("error al buscar peticio")
-		}
 
 	}
 	c.ServeJSON()
@@ -386,7 +347,7 @@ func (c *UserController) GetPeticionsRadiUser() {
 	iduser, err := DecodeToken(token)
 	u, err := models.FindUserByID(iduser)
 	if err == nil {
-		peticions, err := models.GetPeticionsRadi(u.X, u.Y)
+		peticions, err := models.GetPeticionsRadi(u.X, u.Y, iduser)
 		if err == nil {
 			c.Data["json"] = peticions
 			c.ServeJSON()
@@ -401,9 +362,13 @@ func (c *UserController) GetPeticionsRadiUser() {
 func (c *UserController) GetPeticionsUsuari() {
 	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
-	u, err := models.FindUserByID(iduser)
 	if err == nil {
-		c.Data["json"] = u.PeticionsUser
+		p, err := models.GetPeticionsUsuari(iduser)
+		if err == nil {
+			c.Data["json"] = p
+		} else {
+			c.Data["json"] = "no hi ha petcions"
+		}
 		c.ServeJSON()
 
 	} else {

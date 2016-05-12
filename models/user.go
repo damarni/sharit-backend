@@ -15,21 +15,18 @@ import (
 
 // User is a user :D
 type User struct {
-	ID            bson.ObjectId `bson:"_id,omitempty"`
-	IDuser        string        `bson:"iduser,omitempty"`
-	Email         string        `bson:"email,omitempty"`
-	Pass          string        `bson:"pass,omitempty"`
-	Name          string        `bson:"name,omitempty"`
-	Surname       string        `bson:"surname,omitempty"`
-	Stars         string        `bson:"stars,omitempty"`
-	ItemsUser     Items         `bson:"itemsUser,omitempty"`
-	X             int           `bson:"x,omitempty"`
-	Y             int           `bson:"y,omitempty"`
-	Token         string        `bson:"token,omitempty"`
-	FavUser       Favs          `bson:"favuser,omitempty"`
-	PeticionsUser Peticions     `bson:"peticions,omitempty"`
-	PeticionsIn   Peticions     `bson:"peticionsin,omitempty"`
-	PeticionsOut  Peticions     `bson:"peticionsOut,omitempty"`
+	ID        bson.ObjectId `bson:"_id,omitempty"`
+	IDuser    string        `bson:"iduser,omitempty"`
+	Email     string        `bson:"email,omitempty"`
+	Pass      string        `bson:"pass,omitempty"`
+	Name      string        `bson:"name,omitempty"`
+	Surname   string        `bson:"surname,omitempty"`
+	Stars     string        `bson:"stars,omitempty"`
+	ItemsUser Items         `bson:"itemsUser,omitempty"`
+	X         int           `bson:"x,omitempty"`
+	Y         int           `bson:"y,omitempty"`
+	Token     string        `bson:"token,omitempty"`
+	FavUser   Favs          `bson:"favuser,omitempty"`
 }
 
 //Users is a list of User
@@ -68,21 +65,6 @@ func DeleteUserByID(id string) error {
 	err := c.Remove(bson.M{"iduser": id})
 
 	return err
-}
-
-// FindPetUserByID returns a user found by steamid
-func FindPetUserByID(id, idpet string) (Peticio, error) {
-	var u User
-
-	db := mongo.Conn()
-	defer db.Close()
-
-	c := db.DB(beego.AppConfig.String("database")).C("users")
-	err := c.Find(bson.M{"$and": []interface{}{
-		bson.M{"iduser": id},
-		bson.M{"peticions": bson.M{"$elemMatch": bson.M{"id": idpet}}}}}).One(&u)
-
-	return u.PeticionsUser[0], err
 }
 
 // FindUserByMail returns a user found by steamid
@@ -163,50 +145,6 @@ func (u *User) DeleteItemModel(id string) error {
 	fmt.Println(err)
 	return err
 
-}
-
-// PutPeticio updates user profile
-func (u *User) PutPeticio(pet Peticio) error {
-	fmt.Println(pet)
-	db := mongo.Conn()
-	defer db.Close()
-	c := db.DB(beego.AppConfig.String("database")).C("users")
-	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"peticions": pet}})
-	fmt.Println(err)
-	return err
-}
-
-// DeletPeticio updates user profile
-func (u *User) DeletPeticio(pet Peticio) error {
-	fmt.Println(pet)
-	db := mongo.Conn()
-	defer db.Close()
-	c := db.DB(beego.AppConfig.String("database")).C("users")
-	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$pull": bson.M{"peticions": bson.M{"id": pet.ID}}})
-	fmt.Println(err)
-	return err
-}
-
-// PutPeticioIn updates user profile
-func (u *User) PutPeticioIn(pet Peticio) error {
-	fmt.Println(pet)
-	db := mongo.Conn()
-	defer db.Close()
-	c := db.DB(beego.AppConfig.String("database")).C("users")
-	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"peticionsin": pet}})
-	fmt.Println(err)
-	return err
-}
-
-// PutPeticioOuy updates user profile
-func (u *User) PutPeticioOut(pet Peticio) error {
-	fmt.Println(pet)
-	db := mongo.Conn()
-	defer db.Close()
-	c := db.DB(beego.AppConfig.String("database")).C("users")
-	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"peticionsout": pet}})
-	fmt.Println(err)
-	return err
 }
 
 // PutFavouriteModel put favourite on a user array FavUser

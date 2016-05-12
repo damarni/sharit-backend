@@ -21,6 +21,7 @@ type Peticio struct {
 	ItemID     string        `bson:"itemID,omitempty"`
 	X          int           `bson:"x,omitempty"`
 	Y          int           `bson:"y,omitempty"`
+	Acceptada  bool          `bson:"acceptada,omitempty"`
 }
 
 //Peticions is a list of User
@@ -37,7 +38,7 @@ func (p *Peticio) Create() error {
 }
 
 // GetPeticionsRadi returns a user found by steamid
-func GetPeticionsRadi(x, y int) (Peticions, error) {
+func GetPeticionsRadi(x, y int, iduser string) (Peticions, error) {
 	var pets Peticions
 
 	db := mongo.Conn()
@@ -46,15 +47,32 @@ func GetPeticionsRadi(x, y int) (Peticions, error) {
 	c := db.DB(beego.AppConfig.String("database")).C("peticions")
 	err := c.Find(
 		bson.M{"$and": []interface{}{
+			bson.M{"$and": []interface{}{
+				bson.M{
+					"$and": []interface{}{
+						bson.M{"x": bson.M{"$lt": x + radi}},
+						bson.M{"x": bson.M{"$gt": x - radi}}}},
+				bson.M{
+					"$and": []interface{}{
+						bson.M{"y": bson.M{"$lt": x + radi}},
+						bson.M{"y": bson.M{"$gt": x - radi}}}},
+			}},
 			bson.M{
 				"$and": []interface{}{
-					bson.M{"x": bson.M{"$lt": x + radi}},
-					bson.M{"x": bson.M{"$gt": x - radi}}}},
-			bson.M{
-				"$and": []interface{}{
-					bson.M{"y": bson.M{"$lt": x + radi}},
-					bson.M{"y": bson.M{"$gt": x - radi}}}},
+					bson.M{"iduser": bson.M{"$ne": iduser}},
+					bson.M{"acceptada": false}}},
 		}}).All(&pets)
+	return pets, err
+}
+
+// GetPeticionsUsuari returns a user found by steamid
+func GetPeticionsUsuari(iduser string) (Peticions, error) {
+	var pets Peticions
+
+	db := mongo.Conn()
+	defer db.Close()
+	c := db.DB(beego.AppConfig.String("database")).C("peticions")
+	err := c.Find(bson.M{"to": iduser}).All(&pets)
 	return pets, err
 }
 
@@ -80,5 +98,14 @@ func DeletePeticioByID(id string) error {
 	c := db.DB(beego.AppConfig.String("database")).C("peticions")
 	err := c.Remove(bson.M{"id": id})
 
+	return err
+}
+
+// UpdatePeticioTo updates user profile
+func (p *Peticio) UpdatePeticioTo() error {
+	db := mongo.Conn()
+	defer db.Close()
+	c := db.DB(beego.AppConfig.String("database")).C("peticions")
+	err := c.Update(bson.M{"id": p.ID}, bson.M{"$set": bson.M{"to": p.To, "itemID": p.ItemID}})
 	return err
 }
