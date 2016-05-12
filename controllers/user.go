@@ -100,7 +100,7 @@ func (c *UserController) EditProfile() {
 		fmt.Println("update ok")
 	}
 
-	c.Data["json"] = "ok"
+	c.Data["json"] = u
 	c.ServeJSON()
 }
 
@@ -123,11 +123,17 @@ func (c *UserController) GetAll() {
 func (c *UserController) Get() {
 
 	token := c.Ctx.Input.Header("token")
-	_, err := DecodeToken(token)
+	idToken, err := DecodeToken(token)
+
 	if err == nil {
-		id := c.GetString("id")
-		fmt.Println(id)
-		u, err := models.FindUserByID(id)
+		id := ""
+		id = c.GetString("id")
+		var u models.User
+		if id != "" {
+			u, err = models.FindUserByID(id)
+		} else {
+			u, err = models.FindUserByID(idToken)
+		}
 		if err != nil {
 			fmt.Println(err)
 			c.Data["json"] = "user not found"
@@ -244,29 +250,50 @@ func (c *UserController) GetItem() models.Item {
 	return item
 }
 
-// PutPeticioRadi put peticio al radi
-func (c *UserController) PutPeticioRadi() {
-	//rebre el token i verificar si es coorrecte
+// PutPeticioUsuari get a user
+func (c *UserController) PutPeticio() {
+	//fer una peticio especifica a un usuari
+	token := c.Ctx.Input.Header("token")
+	iduser, _ := DecodeToken(token)
+	userto := c.GetString("userTo")
+	itemId := c.GetString("itemId")
 	name := c.GetString("name")
 	description := c.GetString("description")
-	token := c.Ctx.Input.Header("token")
-	iduser, err := DecodeToken(token)
-	u, err := models.FindUserByID(iduser)
-	var p models.Peticio
-	p.IDuser = iduser
-	p.ID = EncodeMsg(iduser + time.Now().String())
-	p.Name = name
-	p.To = ""
-	p.Descripcio = description
-	p.X = u.X
-	p.Y = u.Y
-	if err != nil {
-		c.Data["json"] = "user not found"
+
+	if userto == "" {
+		u, err := models.FindUserByID(iduser)
+		var p models.Peticio
+		p.IDuser = iduser
+		p.ID = EncodeMsg(iduser + time.Now().String())
+		p.Name = name
+		p.To = ""
+		p.Descripcio = description
+		p.X = u.X
+		p.Y = u.Y
+		if err != nil {
+			c.Data["json"] = "user not found"
+		} else {
+			p.Create()
+			c.Data["json"] = "ok"
+		}
+		c.ServeJSON()
 	} else {
-		p.Create()
+		u, _ := models.FindUserByID(userto)
+		uPet, _ := models.FindUserByID(iduser)
+		var pet models.Peticio
+		pet.ID = EncodeMsg(iduser + time.Now().String())
+		pet.Descripcio = description
+		pet.IDuser = iduser
+		pet.To = userto
+		pet.Name = name
+		pet.X = uPet.X
+		pet.Y = uPet.Y
+		pet.ItemID = itemId
+		u.PutPeticio(pet)
 		c.Data["json"] = "ok"
+		c.ServeJSON()
 	}
-	c.ServeJSON()
+
 }
 
 // AcceptRadiPetition put peticio al radi
@@ -327,30 +354,6 @@ func (c *UserController) AcceptUserPetition() {
 
 	}
 	c.ServeJSON()
-}
-
-// PutPeticioUsuari get a user
-func (c *UserController) PutPeticioUsuari() {
-	//fer una peticio especifica a un usuari
-	token := c.Ctx.Input.Header("token")
-	iduser, _ := DecodeToken(token)
-	userto := c.GetString("userTo")
-	itemId := c.GetString("itemId")
-	u, _ := models.FindUserByID(userto)
-
-	uPet, _ := models.FindUserByID(iduser)
-	var pet models.Peticio
-	pet.ID = EncodeMsg(iduser + time.Now().String())
-	pet.Descripcio = c.GetString("description")
-	pet.IDuser = iduser
-	pet.To = userto
-	pet.X = uPet.X
-	pet.Y = uPet.Y
-	pet.ItemID = itemId
-	u.PutPeticio(pet)
-	c.Data["json"] = "ok"
-	c.ServeJSON()
-
 }
 
 // GetPeticionsRadiUser get a user
