@@ -58,6 +58,18 @@ func FindUserByID(id string) (User, error) {
 	return u, err
 }
 
+// DeleteUserByID returns a user found by steamid
+func DeleteUserByID(id string) error {
+
+	db := mongo.Conn()
+	defer db.Close()
+
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+	err := c.Remove(bson.M{"iduser": id})
+
+	return err
+}
+
 // FindPetUserByID returns a user found by steamid
 func FindPetUserByID(id, idpet string) (Peticio, error) {
 	var u User
