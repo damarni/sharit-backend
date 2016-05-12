@@ -277,6 +277,23 @@ func (c *UserController) GetItemsRadi() {
 	}
 }
 
+// UpdateItem update user item
+func (c *UserController) UpdateItem() {
+	token := c.Ctx.Input.Header("token")
+	iduser, _ := DecodeToken(token)
+	u, err := models.FindUserByID(iduser)
+	name := c.GetString("name")
+	iditem := c.GetString("idItem")
+	description := c.GetString("description")
+	image := c.GetString("image")
+	var it models.Item
+	it.Idd = iditem
+	it.Description = description
+	it.ItemName = name
+	it.Image = image
+	err := u.UpdateItemModels(it)
+}
+
 // GetItem return user items
 func (c *UserController) GetItem() models.Item {
 	token := c.Ctx.Input.Header("token")

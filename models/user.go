@@ -95,6 +95,15 @@ func (u *User) FindFavouriteByID(iditem string) (Item, error) {
 
 }
 
+// UpdateItemModels updates user profile
+func (u *User) UpdateItemModels(i Item) error {
+	db := mongo.Conn()
+	defer db.Close()
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+	err := c.Update(bson.M{"itemsUser": bson.M{"$elemMatch": bson.M{"Idd": i.Idd}, "iduser": u.IDuser}}, bson.M{"$set": bson.M{"itemsUser.$.itemname": i.ItemName, "itemsUser.$.description": i.Description, "itemsUser.$.image": i.Image}})
+	return err
+}
+
 // UpdateUser updates user profile
 func (u *User) UpdateUser() error {
 	db := mongo.Conn()
