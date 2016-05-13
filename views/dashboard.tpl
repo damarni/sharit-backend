@@ -62,7 +62,7 @@
 
     function initMap() {
       map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 13,
+        zoom: 14,
         center: {lat: 41.386756, lng: 2.170467},
         mapTypeId: google.maps.MapTypeId.SATELLITE,
         setMap : map
@@ -118,6 +118,7 @@
 
 
 </script>
+
 <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDb3m6o_OKV5OwUsLAdzdDQB8DQ6BJMIl0&callback=initMap&libraries=visualization">
 </script>

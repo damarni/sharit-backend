@@ -22,7 +22,7 @@ func random(min, max float64) float64 {
 //Get jhj
 func (c *DashboardController) Get() {
 	var data []Point
-	for i := 0; i < 300; i++ {
+	for i := 0; i < 800; i++ {
 		var p Point
 		p.Lat = random(41.374047, 41.413351)
 		p.Lng = random(2.119863, 2.179611)
