@@ -306,9 +306,10 @@ func (c *UserController) UpdateItem() {
 // GetItem return user items
 func (c *UserController) GetItem() models.Item {
 	token := c.Ctx.Input.Header("token")
-	iduser, _ := DecodeToken(token)
+	_, err := DecodeToken(token)
 	idItem := c.GetString("idItem")
-	u, err := models.FindUserByID(iduser)
+	idUser := c.GetString("idUser")
+	u, err := models.FindUserByID(idUser)
 	var item models.Item
 	uintID, _ := strconv.ParseUint(idItem, 10, 32)
 	if err != nil {
@@ -324,8 +325,76 @@ func (c *UserController) GetItem() models.Item {
 	return item
 }
 
+// GetItemSoft return user items
+func (c *UserController) GetItemSoft() {
+	token := c.Ctx.Input.Header("token")
+	_, err := DecodeToken(token)
+	idItem := c.GetString("idItem")
+	idUser := c.GetString("idUser")
+	u, err := models.FindUserByID(idUser)
+	var item models.Item
+	uintID, _ := strconv.ParseUint(idItem, 10, 32)
+	if err != nil {
+		c.Data["json"] = "user not found"
+	} else {
+		items := u.ItemsUser
+		for _, it := range items {
+			if it.ID == uintID {
+				item = it
+			}
+		}
+	}
+	c.Data["json"] = item
+
+	c.ServeJSON()
+}
+
 // PutPeticioUsuari get a user
 func (c *UserController) PutPeticio() {
+	//fer una peticio especifica a un usuari
+	token := c.Ctx.Input.Header("token")
+	iduser, _ := DecodeToken(token)
+	userto := c.GetString("userTo")
+	itemId := c.GetString("itemId")
+	name := c.GetString("name")
+	description := c.GetString("description")
+
+	if userto == "" {
+		u, _ := models.FindUserByID(iduser)
+		var p models.Peticio
+		p.IDuser = iduser
+		p.ID = EncodeMsg(iduser + time.Now().String())
+		p.Name = name
+		p.To = ""
+		p.Descripcio = description
+		p.X = u.X
+		p.Y = u.Y
+		p.Acceptada = false
+		p.Create()
+		c.Data["json"] = "ok"
+
+		c.ServeJSON()
+	} else {
+		uPet, _ := models.FindUserByID(iduser)
+		var pet models.Peticio
+		pet.ID = EncodeMsg(iduser + time.Now().String())
+		pet.Descripcio = description
+		pet.IDuser = iduser
+		pet.To = userto
+		pet.Name = name
+		pet.X = uPet.X
+		pet.Y = uPet.Y
+		pet.ItemID = itemId
+		pet.Acceptada = true
+		pet.Create()
+		c.Data["json"] = "ok"
+		c.ServeJSON()
+	}
+
+}
+
+// PutTransaccio get a user
+func (c *UserController) PutTransaccio() {
 	//fer una peticio especifica a un usuari
 	token := c.Ctx.Input.Header("token")
 	iduser, _ := DecodeToken(token)
