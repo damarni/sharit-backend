@@ -13,10 +13,19 @@ type UserController struct {
 	BaseController
 }
 
+type LoginStruct struct {
+	Mail string `bson:"mail"`
+	X    int    `bson:"x"`
+	Y    int    `bson:"y"`
+	Pass string `bson:"pass"`
+}
+
 // Login user
 func (c *UserController) Login() {
-	mail := c.GetString("mail")
-	pass := c.GetString("pass")
+	var datapoint LoginStruct
+	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
+	mail := datapoint.Mail
+	pass := datapoint.Pass
 	u, err := models.FindUserByMail(mail)
 	if err == nil {
 		if pass == u.Pass {
@@ -43,17 +52,20 @@ type reg struct {
 
 // Register register
 func (c *UserController) Register() {
-
-	name := c.GetString("name")
-	surname := c.GetString("surname")
+	var datapoint models.User
+	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
+	name := datapoint.Name
+	surname := datapoint.Surname
 	stars := "0"
-	mail := c.GetString("mail")
-	pass := c.GetString("pass")
+	mail := datapoint.Email
+	pass := datapoint.Pass
+	fmt.Println(datapoint)
 	_, err := models.FindUserByID(EncodeID64(mail, name, surname))
 	if err != nil {
 		var u models.User
 		u.IDuser = EncodeID64(mail, name, surname)
 		u.Email = mail
+		u.Surname = surname
 		u.Pass = pass
 		u.Name = name
 		u.Stars = stars
@@ -77,8 +89,10 @@ func (c *UserController) Register() {
 
 //EditProfile : only can update email and password
 func (c *UserController) EditProfile() {
-
-	mail := c.GetString("mail")
+	var datapoint LoginStruct
+	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
+	fmt.Println(datapoint.Mail)
+	mail := datapoint.Mail
 	token := c.Ctx.Input.Header("token")
 	id, err := DecodeToken(token)
 	if err != nil {
@@ -86,8 +100,8 @@ func (c *UserController) EditProfile() {
 		c.Data["json"] = "error token id"
 		c.ServeJSON()
 	}
-	coordx, _ := c.GetInt("X")
-	coordy, _ := c.GetInt("Y")
+	coordx := datapoint.X
+	coordy := datapoint.Y
 	var u models.User
 	u.IDuser = id
 	u.Email = mail
@@ -119,6 +133,10 @@ func (c *UserController) GetAll() {
 	c.ServeJSON()
 }
 
+type GetUsertStruct struct {
+	ID string `bson:"id"`
+}
+
 // Get get a user
 func (c *UserController) Get() {
 
@@ -127,7 +145,9 @@ func (c *UserController) Get() {
 
 	if err == nil {
 		id := ""
-		id = c.GetString("id")
+		var datapoint GetUsertStruct
+		json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
+		id = datapoint.ID
 		var u models.User
 		if id != "" {
 			u, err = models.FindUserByID(id)
@@ -172,12 +192,17 @@ func (c *UserController) DeleteUser() {
 
 }
 
+type PetDel struct {
+	IdPet string `bson:"idPeticio"`
+}
+
 // DeletePeticio get a user
 func (c *UserController) DeletePeticio() {
-
+	var datapoint PetDel
+	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
 	token := c.Ctx.Input.Header("token")
 	_, err := DecodeToken(token)
-	idpet := c.GetString("idPeticio")
+	idpet := datapoint.IdPet
 
 	if err == nil {
 
@@ -198,12 +223,12 @@ func (c *UserController) DeletePeticio() {
 
 // PutItem get a user
 func (c *UserController) PutItem() {
-
-	//rebre el token i verificar si es coorrecte
-	name := c.GetString("name")
-	description := c.GetString("description")
+	var datapoint models.Item
+	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
+	name := datapoint.ItemName
+	description := datapoint.Description
 	stars := "0"
-	image := c.GetString("image")
+	image := datapoint.Image
 	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
 	var i models.Item
@@ -229,8 +254,10 @@ func (c *UserController) PutItem() {
 
 // DeleteItem get a user
 func (c *UserController) DeleteItem() {
+	var datapoint models.Item
+	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
 
-	idItem := c.GetString("idItem")
+	idItem := datapoint.Idd
 	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
 
@@ -261,6 +288,20 @@ func (c *UserController) GetItems() {
 
 }
 
+// GetTransaccions return user items
+func (c *UserController) GetTransaccions() {
+	token := c.Ctx.Input.Header("token")
+	iduser, _ := DecodeToken(token)
+	u, err := models.FindUserByID(iduser)
+	if err != nil {
+		c.Data["json"] = "user not found"
+	} else {
+		c.Data["json"] = u.Transaccions
+	}
+	c.ServeJSON()
+
+}
+
 // GetItemsRadi return user items
 func (c *UserController) GetItemsRadi() {
 	token := c.Ctx.Input.Header("token")
@@ -284,10 +325,14 @@ func (c *UserController) UpdateItem() {
 	token := c.Ctx.Input.Header("token")
 	iduser, _ := DecodeToken(token)
 	u, err := models.FindUserByID(iduser)
-	name := c.GetString("name")
-	iditem := c.GetString("idItem")
-	description := c.GetString("description")
-	image := c.GetString("image")
+
+	var datapoint models.Item
+	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
+
+	name := datapoint.ItemName
+	iditem := datapoint.Idd
+	description := datapoint.Description
+	image := datapoint.Image
 	var it models.Item
 	it.Idd = iditem
 	it.Description = description
@@ -303,12 +348,19 @@ func (c *UserController) UpdateItem() {
 
 }
 
+type GetItemStruct struct {
+	IDItem string `bson:"idItem"`
+	IDUser string `bson:"idUser"`
+}
+
 // GetItem return user items
 func (c *UserController) GetItem() models.Item {
 	token := c.Ctx.Input.Header("token")
 	_, err := DecodeToken(token)
-	idItem := c.GetString("idItem")
-	idUser := c.GetString("idUser")
+	var datapoint GetItemStruct
+	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
+	idItem := datapoint.IDItem
+	idUser := datapoint.IDUser
 	u, err := models.FindUserByID(idUser)
 	var item models.Item
 	uintID, _ := strconv.ParseUint(idItem, 10, 32)
@@ -329,8 +381,11 @@ func (c *UserController) GetItem() models.Item {
 func (c *UserController) GetItemSoft() {
 	token := c.Ctx.Input.Header("token")
 	_, err := DecodeToken(token)
-	idItem := c.GetString("idItem")
-	idUser := c.GetString("idUser")
+
+	var datapoint GetItemStruct
+	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
+	idItem := datapoint.IDItem
+	idUser := datapoint.IDUser
 	u, err := models.FindUserByID(idUser)
 	var item models.Item
 	uintID, _ := strconv.ParseUint(idItem, 10, 32)
@@ -351,45 +406,28 @@ func (c *UserController) GetItemSoft() {
 
 // PutPeticioUsuari get a user
 func (c *UserController) PutPeticio() {
-	//fer una peticio especifica a un usuari
+	//fer una peticio especifica a un usua
 	token := c.Ctx.Input.Header("token")
 	iduser, _ := DecodeToken(token)
-	userto := c.GetString("userTo")
-	itemId := c.GetString("itemId")
-	name := c.GetString("name")
-	description := c.GetString("description")
 
-	if userto == "" {
-		u, _ := models.FindUserByID(iduser)
-		var p models.Peticio
-		p.IDuser = iduser
-		p.ID = EncodeMsg(iduser + time.Now().String())
-		p.Name = name
-		p.To = ""
-		p.Descripcio = description
-		p.X = u.X
-		p.Y = u.Y
-		p.Acceptada = false
-		p.Create()
-		c.Data["json"] = "ok"
+	var datapoint models.Peticio
+	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
 
-		c.ServeJSON()
-	} else {
-		uPet, _ := models.FindUserByID(iduser)
-		var pet models.Peticio
-		pet.ID = EncodeMsg(iduser + time.Now().String())
-		pet.Descripcio = description
-		pet.IDuser = iduser
-		pet.To = userto
-		pet.Name = name
-		pet.X = uPet.X
-		pet.Y = uPet.Y
-		pet.ItemID = itemId
-		pet.Acceptada = true
-		pet.Create()
-		c.Data["json"] = "ok"
-		c.ServeJSON()
-	}
+	name := datapoint.Name
+	description := datapoint.Descripcio
+	u, _ := models.FindUserByID(iduser)
+	var p models.Peticio
+	p.IDuser = iduser
+	p.ID = EncodeMsg(iduser + time.Now().String())
+	p.Name = name
+	p.To = ""
+	p.Descripcio = description
+	p.X = u.X
+	p.Y = u.Y
+	p.Acceptada = false
+	p.Create()
+	c.Data["json"] = "ok"
+	c.ServeJSON()
 
 }
 
@@ -398,50 +436,48 @@ func (c *UserController) PutTransaccio() {
 	//fer una peticio especifica a un usuari
 	token := c.Ctx.Input.Header("token")
 	iduser, _ := DecodeToken(token)
-	userto := c.GetString("userTo")
-	itemId := c.GetString("itemId")
-	name := c.GetString("name")
-	description := c.GetString("description")
 
-	if userto == "" {
-		u, _ := models.FindUserByID(iduser)
-		var p models.Peticio
-		p.IDuser = iduser
-		p.ID = EncodeMsg(iduser + time.Now().String())
-		p.Name = name
-		p.To = ""
-		p.Descripcio = description
-		p.X = u.X
-		p.Y = u.Y
-		p.Acceptada = false
-		p.Create()
-		c.Data["json"] = "ok"
+	var datapoint models.Peticio
+	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
 
-		c.ServeJSON()
-	} else {
-		uPet, _ := models.FindUserByID(iduser)
-		var pet models.Peticio
-		pet.ID = EncodeMsg(iduser + time.Now().String())
-		pet.Descripcio = description
-		pet.IDuser = iduser
-		pet.To = userto
-		pet.Name = name
-		pet.X = uPet.X
-		pet.Y = uPet.Y
-		pet.ItemID = itemId
-		pet.Acceptada = true
-		pet.Create()
-		c.Data["json"] = "ok"
-		c.ServeJSON()
-	}
+	name := datapoint.Name
+	description := datapoint.Descripcio
 
+	userto := datapoint.To
+	itemId := datapoint.ItemID
+	uTo, _ := models.FindUserByID(userto)
+	uPet, _ := models.FindUserByID(iduser)
+	var pet models.Peticio
+	pet.ID = EncodeMsg(iduser + time.Now().String())
+	pet.Descripcio = description
+	pet.IDuser = iduser
+	pet.To = userto
+	pet.Name = name
+	pet.X = uPet.X
+	pet.Y = uPet.Y
+	pet.ItemID = itemId
+	pet.Acceptada = true
+	uTo.PutTransaccio(pet)
+	uPet.PutTransaccio(pet)
+	c.Data["json"] = "ok"
+	c.ServeJSON()
+
+}
+
+type AcceptStruct struct {
+	IDpet string `bson:"idpeticio"`
+	IDit  string `bson:"iditem"`
 }
 
 // AcceptRadiPetition put peticio al radi
 func (c *UserController) AcceptRadiPetition() {
 	//rebre el token i verificar si es coorrecte
-	idpet := c.GetString("idpeticio")
-	iditem := c.GetString("iditem")
+
+	var datapoint AcceptStruct
+	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
+
+	idpet := datapoint.IDpet
+	iditem := datapoint.IDit
 	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
 	p, err := models.FindPeticioByID(idpet)
@@ -452,8 +488,11 @@ func (c *UserController) AcceptRadiPetition() {
 		p.To = iduser
 		p.ItemID = iditem
 		p.Acceptada = true
-		p.UpdatePeticioTo()
-
+		models.DeletePeticioByID(idpet)
+		uTo, _ := models.FindUserByID(p.To)
+		uPet, _ := models.FindUserByID(p.IDuser)
+		uTo.PutTransaccio(p)
+		uPet.PutTransaccio(p)
 		c.Data["json"] = "ok"
 
 	}
@@ -471,25 +510,6 @@ func (c *UserController) GetPeticionsRadiUser() {
 			c.Data["json"] = peticions
 			c.ServeJSON()
 		}
-	} else {
-		c.Data["json"] = "error a les petcions"
-		c.ServeJSON()
-	}
-}
-
-// GetPeticionsUsuari get a user
-func (c *UserController) GetPeticionsUsuari() {
-	token := c.Ctx.Input.Header("token")
-	iduser, err := DecodeToken(token)
-	if err == nil {
-		p, err := models.GetPeticionsUsuari(iduser)
-		if err == nil {
-			c.Data["json"] = p
-		} else {
-			c.Data["json"] = "no hi ha petcions"
-		}
-		c.ServeJSON()
-
 	} else {
 		c.Data["json"] = "error a les petcions"
 		c.ServeJSON()
@@ -528,29 +548,6 @@ func (c *UserController) GetFavouritesUsuari() {
 
 	} else {
 		c.Data["json"] = "error a les petcions"
-		c.ServeJSON()
-	}
-}
-
-//PutCoordenades put cordenades for the user
-func (c *UserController) PutCoordenades() {
-	token := c.Ctx.Input.Header("token")
-	id, err := DecodeToken(token)
-	if err != nil {
-		c.Data["json"] = "error token id"
-		c.ServeJSON()
-	}
-	u, err := models.FindUserByID(id)
-	coordx, _ := c.GetInt("X")
-	coordy, _ := c.GetInt("Y")
-	u.X = coordx
-	u.Y = coordy
-	err = u.UpdateUserCoords()
-	if err != nil {
-		fmt.Println("error al fer update")
-	} else {
-		fmt.Println("update ok")
-		c.Data["json"] = "ok"
 		c.ServeJSON()
 	}
 }

@@ -65,17 +65,6 @@ func GetPeticionsRadi(x, y int, iduser string) (Peticions, error) {
 	return pets, err
 }
 
-// GetPeticionsUsuari returns a user found by steamid
-func GetPeticionsUsuari(iduser string) (Peticions, error) {
-	var pets Peticions
-
-	db := mongo.Conn()
-	defer db.Close()
-	c := db.DB(beego.AppConfig.String("database")).C("peticions")
-	err := c.Find(bson.M{"to": iduser}).All(&pets)
-	return pets, err
-}
-
 // FindPeticioByID returns a user found by steamid
 func FindPeticioByID(id string) (Peticio, error) {
 	var p Peticio

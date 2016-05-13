@@ -15,18 +15,19 @@ import (
 
 // User is a user :D
 type User struct {
-	ID        bson.ObjectId `bson:"_id,omitempty"`
-	IDuser    string        `bson:"iduser,omitempty"`
-	Email     string        `bson:"email,omitempty"`
-	Pass      string        `bson:"pass,omitempty"`
-	Name      string        `bson:"name,omitempty"`
-	Surname   string        `bson:"surname,omitempty"`
-	Stars     string        `bson:"stars,omitempty"`
-	ItemsUser Items         `bson:"itemsUser,omitempty"`
-	X         int           `bson:"x,omitempty"`
-	Y         int           `bson:"y,omitempty"`
-	Token     string        `bson:"token,omitempty"`
-	FavUser   Favs          `bson:"favuser,omitempty"`
+	ID           bson.ObjectId `bson:"_id,omitempty"`
+	IDuser       string        `bson:"iduser,omitempty"`
+	Email        string        `bson:"email,omitempty"`
+	Pass         string        `bson:"pass,omitempty"`
+	Name         string        `bson:"name,omitempty"`
+	Surname      string        `bson:"surname,omitempty"`
+	Stars        string        `bson:"stars,omitempty"`
+	ItemsUser    Items         `bson:"itemsUser,omitempty"`
+	X            int           `bson:"x,omitempty"`
+	Y            int           `bson:"y,omitempty"`
+	Token        string        `bson:"token,omitempty"`
+	FavUser      Favs          `bson:"favuser,omitempty"`
+	Transaccions Peticio       `bson:"transaccions,omitempty"`
 }
 
 //Users is a list of User
@@ -130,6 +131,18 @@ func GetAllUsers() (Users, error) {
 	c := db.DB(beego.AppConfig.String("database")).C("users")
 	err := c.Find(bson.M{}).All(&p)
 	return p, err
+}
+
+// PutTransaccio put item on a user array
+func (u *User) PutTransaccio(p Peticio) error {
+	db := mongo.Conn()
+	defer db.Close()
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+
+	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"transaccions": p}})
+	fmt.Println(err)
+
+	return err
 }
 
 // PutItemModel put item on a user array
