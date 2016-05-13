@@ -31,6 +31,8 @@ func init() {
 	beego.Router("/room/findRoom", &controllers.SocketController{}, "get:GetRoom")
 	beego.Router("/room/putMessage", &controllers.SocketController{}, "get:PutMessage")
 
+	beego.Router("/dashboard", &controllers.DashboardController{})
+
 	//beego.Router("/user/putFavourite", &controllers.ItemController{}, "get:PutFavourite")
 	//falta getFavourite
 	//beego.Router("/user/putCoordenades", &controllers.ItemController{}, "get:PutCoordenades")

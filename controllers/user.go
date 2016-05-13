@@ -220,6 +220,7 @@ func (c *UserController) PutItem() {
 	} else {
 		fmt.Println("ok item")
 		u.PutItemModel(i)
+		u, _ := models.FindUserByID(iduser)
 		c.Data["json"] = u
 	}
 	c.ServeJSON()
@@ -239,6 +240,7 @@ func (c *UserController) DeleteItem() {
 	} else {
 		fmt.Println("ok item")
 		u.DeleteItemModel(idItem)
+		u, _ := models.FindUserByID(iduser)
 		c.Data["json"] = u
 	}
 	c.ServeJSON()
@@ -291,7 +293,14 @@ func (c *UserController) UpdateItem() {
 	it.Description = description
 	it.ItemName = name
 	it.Image = image
-	err := u.UpdateItemModels(it)
+	err = u.UpdateItemModels(it)
+	if err == nil {
+		c.Data["json"] = it
+	} else {
+		c.Data["json"] = "error updating"
+	}
+	c.ServeJSON()
+
 }
 
 // GetItem return user items
