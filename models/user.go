@@ -27,7 +27,7 @@ type User struct {
 	Y            int           `bson:"y,omitempty"`
 	Token        string        `bson:"token,omitempty"`
 	FavUser      Favs          `bson:"favuser,omitempty"`
-	Transaccions Peticio       `bson:"transaccions,omitempty"`
+	Transaccions []Peticio     `bson:"transaccions,omitempty"`
 }
 
 //Users is a list of User

@@ -14,17 +14,17 @@ type UserController struct {
 }
 
 type LoginStruct struct {
-	Mail string `bson:"mail"`
-	X    int    `bson:"x"`
-	Y    int    `bson:"y"`
-	Pass string `bson:"pass"`
+	Email string `bson:"email"`
+	X     int    `bson:"x"`
+	Y     int    `bson:"y"`
+	Pass  string `bson:"pass"`
 }
 
 // Login user
 func (c *UserController) Login() {
 	var datapoint LoginStruct
 	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
-	mail := datapoint.Mail
+	mail := datapoint.Email
 	pass := datapoint.Pass
 	u, err := models.FindUserByMail(mail)
 	if err == nil {
@@ -91,8 +91,8 @@ func (c *UserController) Register() {
 func (c *UserController) EditProfile() {
 	var datapoint LoginStruct
 	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
-	fmt.Println(datapoint.Mail)
-	mail := datapoint.Mail
+	fmt.Println(datapoint.Email)
+	mail := datapoint.Email
 	token := c.Ctx.Input.Header("token")
 	id, err := DecodeToken(token)
 	if err != nil {
@@ -193,17 +193,17 @@ func (c *UserController) DeleteUser() {
 }
 
 type PetDel struct {
-	IdPet string `bson:"idPeticio"`
+	IDPet string `bson:"idPeticio"`
 }
 
 // DeletePeticio get a user
 func (c *UserController) DeletePeticio() {
-	var datapoint PetDel
+	var datapoint models.Peticio
 	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
 	token := c.Ctx.Input.Header("token")
 	_, err := DecodeToken(token)
-	idpet := datapoint.IdPet
-
+	idpet := datapoint.ID
+	fmt.Println(datapoint)
 	if err == nil {
 
 		err = models.DeletePeticioByID(idpet)
@@ -380,12 +380,9 @@ func (c *UserController) GetItem() models.Item {
 // GetItemSoft return user items
 func (c *UserController) GetItemSoft() {
 	token := c.Ctx.Input.Header("token")
-	_, err := DecodeToken(token)
+	idUser, err := DecodeToken(token)
 
-	var datapoint GetItemStruct
-	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
-	idItem := datapoint.IDItem
-	idUser := datapoint.IDUser
+	idItem := c.GetString("idItem")
 	u, err := models.FindUserByID(idUser)
 	var item models.Item
 	uintID, _ := strconv.ParseUint(idItem, 10, 32)
@@ -465,8 +462,8 @@ func (c *UserController) PutTransaccio() {
 }
 
 type AcceptStruct struct {
-	IDpet string `bson:"idpeticio"`
-	IDit  string `bson:"iditem"`
+	IDpet string `bson:"idpet"`
+	IDit  string `bson:"idit"`
 }
 
 // AcceptRadiPetition put peticio al radi
@@ -480,6 +477,8 @@ func (c *UserController) AcceptRadiPetition() {
 	iditem := datapoint.IDit
 	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
+
+	fmt.Println(idpet)
 	p, err := models.FindPeticioByID(idpet)
 
 	if err != nil {

@@ -3,6 +3,7 @@ package models
 import (
 	//"github.com/novikk/redline/models/mongo"
 
+	"fmt"
 	"sharit-backend/models/mongo"
 
 	"github.com/astaxie/beego"
@@ -21,7 +22,7 @@ type Peticio struct {
 	ItemID     string        `bson:"itemID,omitempty"`
 	X          int           `bson:"x,omitempty"`
 	Y          int           `bson:"y,omitempty"`
-	Acceptada  bool          `bson:"acceptada,omitempty"`
+	Acceptada  bool          `bson:"acceptada"`
 }
 
 //Peticions is a list of User
@@ -83,7 +84,7 @@ func DeletePeticioByID(id string) error {
 
 	db := mongo.Conn()
 	defer db.Close()
-
+	fmt.Println(id)
 	c := db.DB(beego.AppConfig.String("database")).C("peticions")
 	err := c.Remove(bson.M{"id": id})
 

@@ -14,9 +14,9 @@ import (
 type Item struct {
 	ID          uint64    `bson:"_id,omitempty"`
 	Idd         string    `bson:"idd,omitempty"`
-	ItemName    string    `bson:"item,omitempty"`
+	ItemName    string    `bson:"itemname,omitempty"`
 	Description string    `bson:"description,omitempty"`
-	Image       string    `bson:"imagen,omitempty"`
+	Image       string    `bson:"image,omitempty"`
 	Stars       string    `bson:"stars,omitempty"`
 	LastSharit  time.Time `bson:"lastSharit,omitempty"`
 }
