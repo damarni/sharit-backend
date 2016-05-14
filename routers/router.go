@@ -4,7 +4,7 @@ import (
 	"sharit-backend/controllers"
 
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/context"
+	"github.com/astaxie/beego/plugins/cors"
 )
 
 func init() {
@@ -39,9 +39,11 @@ func init() {
 	//falta getFavourite
 	//beego.Router("/user/putCoordenades", &controllers.ItemController{}, "get:PutCoordenades")
 
-	var FilterCORS = func(ctx *context.Context) {
-		ctx.Output.Header("Access-Control-Allow-Origin", "*")
-	}
-
-	beego.InsertFilter("*", beego.BeforeRouter, FilterCORS)
+	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "DELETE", "PUT", "PATCH", "POST", "OPTIONS"},
+		AllowHeaders:     []string{"Origin"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
 }

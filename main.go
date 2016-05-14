@@ -7,5 +7,10 @@ import (
 )
 
 func main() {
+	// CORS for https://foo.* origins, allowing:
+	// - PUT and PATCH methods
+	// - Origin header
+	// // - Credentials share
+
 	beego.Run()
 }
