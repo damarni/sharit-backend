@@ -22,10 +22,9 @@ type LoginStruct struct {
 
 // Login user
 func (c *UserController) Login() {
-	var datapoint LoginStruct
-	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
-	mail := datapoint.Email
-	pass := datapoint.Pass
+	mail := c.GetString("email")
+
+	pass := c.GetString("pass")
 	u, err := models.FindUserByMail(mail)
 	if err == nil {
 		if pass == u.Pass {
