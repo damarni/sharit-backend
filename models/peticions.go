@@ -66,6 +66,22 @@ func GetPeticionsRadi(x, y int, iduser string) (Peticions, error) {
 	return pets, err
 }
 
+// GetPeticionsSelf returns a user found by steamid
+func GetPeticionsSelf(iduser string) (Peticions, error) {
+	var pets Peticions
+
+	db := mongo.Conn()
+	defer db.Close()
+	radi, _ := beego.AppConfig.Int("radi")
+	c := db.DB(beego.AppConfig.String("database")).C("peticions")
+	err := c.Find(
+		bson.M{
+			"$and": []interface{}{
+				bson.M{"iduser": bson.M{"$ne": iduser}},
+				bson.M{"acceptada": false}}}).All(&pets)
+	return pets, err
+}
+
 // FindPeticioByID returns a user found by steamid
 func FindPeticioByID(id string) (Peticio, error) {
 	var p Peticio

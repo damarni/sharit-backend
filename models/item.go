@@ -16,7 +16,9 @@ type Item struct {
 	Idd         string    `bson:"idd,omitempty"`
 	ItemName    string    `bson:"itemname,omitempty"`
 	Description string    `bson:"description,omitempty"`
-	Image       string    `bson:"image,omitempty"`
+	Image1      string    `bson:"image1,omitempty"`
+	Image2      string    `bson:"image2,omitempty"`
+	Image3      string    `bson:"image3,omitempty"`
 	Stars       string    `bson:"stars,omitempty"`
 	LastSharit  time.Time `bson:"lastSharit,omitempty"`
 }

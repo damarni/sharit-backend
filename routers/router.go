@@ -17,6 +17,7 @@ func init() {
 	beego.Router("/user", &controllers.UserController{}, "delete:DeleteUser")
 	beego.Router("/user", &controllers.UserController{}, "put:EditProfile")
 	beego.Router("/peticiones", &controllers.UserController{}, "get:GetPeticionsRadiUser")
+	beego.Router("/peticionesSelf", &controllers.UserController{}, "get:GetPeticionsSelf")
 	beego.Router("/peticion", &controllers.UserController{}, "post:PutPeticio")
 	beego.Router("/peticion", &controllers.UserController{}, "delete:DeletePeticio")
 	beego.Router("/acceptRadiPetition", &controllers.UserController{}, "put:AcceptRadiPetition")
