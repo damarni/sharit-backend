@@ -86,6 +86,13 @@ func (c *UserController) Register() {
 
 }
 
+// Options register
+func (c *UserController) Options() {
+	c.Ctx.Output.Header("Access-Control-Allow-Origin", "*")
+	c.ServeJSON()
+
+}
+
 //EditProfile : only can update email and password
 func (c *UserController) EditProfile() {
 	var datapoint LoginStruct
