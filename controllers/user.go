@@ -114,6 +114,13 @@ func (c *UserController) Register() {
 
 }
 
+// Options register
+func (c *UserController) Options() {
+	c.Ctx.Output.Header("Access-Control-Allow-Origin", "*")
+	c.ServeJSON()
+
+}
+
 //EditProfile : only can update email and password
 func (c *UserController) EditProfile() {
 	var datapoint LoginStruct
@@ -255,7 +262,9 @@ func (c *UserController) PutItem() {
 	name := datapoint.ItemName
 	description := datapoint.Description
 	stars := "0"
-	image := datapoint.Image
+	image1 := datapoint.Image1
+	image2 := datapoint.Image2
+	image3 := datapoint.Image3
 	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
 	var i models.Item
@@ -264,7 +273,9 @@ func (c *UserController) PutItem() {
 	i.ItemName = name
 	i.Description = description
 	i.Stars = stars
-	i.Image = image
+	i.Image1 = image1
+	i.Image2 = image2
+	i.Image3 = image3
 	i.LastSharit = time.Now()
 	u, err := models.FindUserByID(iduser)
 	if err != nil {
@@ -532,6 +543,23 @@ func (c *UserController) GetPeticionsRadiUser() {
 	u, err := models.FindUserByID(iduser)
 	if err == nil {
 		peticions, err := models.GetPeticionsRadi(u.X, u.Y, iduser)
+		if err == nil {
+			c.Data["json"] = peticions
+			c.ServeJSON()
+		}
+	} else {
+		c.Data["json"] = "error a les petcions"
+		c.ServeJSON()
+	}
+}
+
+// GetPeticionsSelf get a user
+func (c *UserController) GetPeticionsSelf() {
+	token := c.Ctx.Input.Header("token")
+	iduser, err := DecodeToken(token)
+	u, err := models.FindUserByID(iduser)
+	if err == nil {
+		peticions, err := models.GetPeticionsSelf(iduser)
 		if err == nil {
 			c.Data["json"] = peticions
 			c.ServeJSON()

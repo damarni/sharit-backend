@@ -9,6 +9,7 @@ import (
 
 func init() {
 	beego.Router("/", &controllers.MainController{})
+	beego.Router("*", &controllers.UserController{}, "options:Options")
 	beego.Router("/user", &controllers.UserController{}, "post:Register")
 	beego.Router("/user/login", &controllers.UserController{}, "get:Login")
 	beego.Router("/users", &controllers.UserController{}, "get:GetAll")
@@ -16,6 +17,7 @@ func init() {
 	beego.Router("/user", &controllers.UserController{}, "delete:DeleteUser")
 	beego.Router("/user", &controllers.UserController{}, "put:EditProfile")
 	beego.Router("/peticiones", &controllers.UserController{}, "get:GetPeticionsRadiUser")
+	beego.Router("/peticionesSelf", &controllers.UserController{}, "get:GetPeticionsSelf")
 	beego.Router("/peticion", &controllers.UserController{}, "post:PutPeticio")
 	beego.Router("/peticion", &controllers.UserController{}, "delete:DeletePeticio")
 	beego.Router("/acceptRadiPetition", &controllers.UserController{}, "put:AcceptRadiPetition")
