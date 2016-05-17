@@ -49,6 +49,34 @@ type reg struct {
 	Iduser string `bson:"iduser,omitempty"`
 }
 
+
+SendOptions
+
+// DeleteUser get a user
+func (c *UserController) SendOptions() {
+
+	token := c.Ctx.Input.Header("token")
+	idToken, err := DecodeToken(token)
+
+	if err == nil {
+
+		err = models.DeleteUserByID(idToken)
+
+		if err != nil {
+			fmt.Println(err)
+			c.Data["json"] = "user not found"
+		} else {
+			c.Data["json"] = "user deleted"
+		}
+		c.ServeJSON()
+	} else {
+		c.Data["json"] = "token fail"
+		c.ServeJSON()
+	}
+
+}
+
+
 // Register register
 func (c *UserController) Register() {
 	var datapoint models.User
