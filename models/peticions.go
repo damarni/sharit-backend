@@ -72,6 +72,7 @@ func GetPeticionsSelf(iduser string) (Peticions, error) {
 
 	db := mongo.Conn()
 	defer db.Close()
+	radi, _ := beego.AppConfig.Int("radi")
 	c := db.DB(beego.AppConfig.String("database")).C("peticions")
 	err := c.Find(
 		bson.M{
