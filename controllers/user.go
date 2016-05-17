@@ -49,6 +49,9 @@ type reg struct {
 	Iduser string `bson:"iduser,omitempty"`
 }
 
+
+SendOptions
+
 // DeleteUser get a user
 func (c *UserController) SendOptions() {
 
@@ -72,6 +75,7 @@ func (c *UserController) SendOptions() {
 	}
 
 }
+
 
 // Register register
 func (c *UserController) Register() {
@@ -366,12 +370,12 @@ func (c *UserController) UpdateItem() {
 	name := datapoint.ItemName
 	iditem := datapoint.Idd
 	description := datapoint.Description
-	image1 := datapoint.Image1
+	image := datapoint.Image
 	var it models.Item
 	it.Idd = iditem
 	it.Description = description
 	it.ItemName = name
-	it.Image1 = image1
+	it.Image = image
 	err = u.UpdateItemModels(it)
 	if err == nil {
 		c.Data["json"] = it
@@ -553,6 +557,7 @@ func (c *UserController) GetPeticionsRadiUser() {
 func (c *UserController) GetPeticionsSelf() {
 	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
+	u, err := models.FindUserByID(iduser)
 	if err == nil {
 		peticions, err := models.GetPeticionsSelf(iduser)
 		if err == nil {

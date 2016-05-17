@@ -53,7 +53,7 @@ func (c *SocketController) GetRoom() {
 }
 
 // PutMessage get a user
-func (c *SocketController) PutMessage() {
+/*func (c *SocketController) PutMessage() {
 
 	idroom := c.GetString("idroom")
 	text := c.GetString("text")
@@ -77,4 +77,4 @@ func (c *SocketController) PutMessage() {
 	}
 	c.ServeJSON()
 
-}
+}*/

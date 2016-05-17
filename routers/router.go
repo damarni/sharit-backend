@@ -2,7 +2,6 @@ package routers
 
 import (
 	"sharit-backend/controllers"
-
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 )
@@ -33,7 +32,7 @@ func init() {
 	beego.Router("/room/create", &controllers.SocketController{}, "get:CreateRoom")
 	beego.Router("/room/findRooms", &controllers.SocketController{}, "get:GetRooms")
 	beego.Router("/room/findRoom", &controllers.SocketController{}, "get:GetRoom")
-	beego.Router("/room/putMessage", &controllers.SocketController{}, "get:PutMessage")
+	//beego.Router("/room/putMessage", &controllers.SocketController{}, "get:PutMessage")
 
 	beego.Router("/dashboard", &controllers.DashboardController{})
 
