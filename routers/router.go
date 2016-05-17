@@ -2,6 +2,7 @@ package routers
 
 import (
 	"sharit-backend/controllers"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 )
@@ -43,7 +44,7 @@ func init() {
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "DELETE", "PUT", "PATCH", "POST", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type"},
+		AllowHeaders:     []string{"Origin", "Content-Type: application/json"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
