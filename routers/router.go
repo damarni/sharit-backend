@@ -11,7 +11,6 @@ func init() {
 	beego.Router("/", &controllers.MainController{})
 	beego.Router("*", &controllers.UserController{}, "options:Options")
 	beego.Router("/user", &controllers.UserController{}, "post:Register")
-	beego.Router("/user", &controllers.UserController{}, "options:Options")
 	beego.Router("/user/login", &controllers.UserController{}, "get:Login")
 	beego.Router("/users", &controllers.UserController{}, "get:GetAll")
 	beego.Router("/user", &controllers.UserController{}, "get:Get")
@@ -44,7 +43,7 @@ func init() {
 
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"GET", "DELETE", "PUT", "PATCH", "POST"},
+		AllowMethods:     []string{"GET", "DELETE", "PUT", "PATCH", "POST", "OPTIONS"},
 		AllowHeaders:     []string{"Origin"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
