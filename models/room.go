@@ -13,6 +13,7 @@ import (
 // Room is a user :D
 type Room struct {
 	ID           bson.ObjectId `bson:"_id,omitempty"`
+	RoomId			 string			   `bson:"roomid,omitempty"`
 	UserID1      string        `bson:"userid1,omitempty"`
 	UserID2      string        `bson:"userid2,omitempty"`
 	ItemID       string        `bson:"itemid,omitempty"`
@@ -54,7 +55,7 @@ func FindRoom(id string) (Room, error) {
 	defer db.Close()
 
 	c := db.DB(beego.AppConfig.String("database")).C("rooms")
-	err := c.Find(bson.M{"_id": id}).One(&r)
+	err := c.Find(bson.M{"roomid": id}).One(&r)
 	return r, err
 }
 

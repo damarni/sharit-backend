@@ -1,6 +1,7 @@
 package chat
 
 import (
+	"encoding/json"
 	"github.com/bitly/go-simplejson"
 	"github.com/googollee/go-socket.io"
 	"log"
@@ -29,7 +30,7 @@ func Run() {
 
 				log.Println("userId:", userId)
 				log.Println("roomId:", roomId)
-				so.Join("/" + "roomId")
+				so.Join(roomId)
 
 				room, err := models.FindRoom(roomId)
 				if err != nil {
@@ -37,7 +38,7 @@ func Run() {
 				} else {
 					for message, _ := range room.MessagesRoom {
 						so.Emit("newMessage", message)
-						so.BroadcastTo(roomId, "newMessage", message)
+						//so.BroadcastTo(roomId, "newMessage", message)
 					}
 					log.Println("setRoomFinished")
 				}
@@ -54,18 +55,35 @@ func Run() {
 				roomId := d.Get("roomId").MustString()
 				message := d.Get("message").MustString()
 
+				time := time.Now().UTC().Format(time.RFC3339Nano)
 				var msg models.Message
 				msg.UserId = userId
 				msg.Text = message
-				msg.Date = time.Now().UTC().Format(time.RFC3339Nano)
+				msg.Date = time
 				room, err := models.FindRoom(roomId)
 				if err != nil {
 					log.Println(err)
 				} else {
+					log.Println(userId, message, time)
 					err = room.PutMessage(msg)
-					so.Emit("newMessage", msg)
-					so.BroadcastTo(roomId, "newMessage", msg)
-					log.Println("newMessageFinished")
+					if err != nil {
+						log.Println(err)
+					} else {
+						newData := map[string]interface{}{
+							"userId":  userId,
+							"message": message,
+							"date":    time,
+						}
+						json, err := json.Marshal(newData)
+						if err != nil {
+							log.Println(err)
+						} else {
+							log.Println(string(json))
+							so.Emit("newMessage", string(json))
+							so.BroadcastTo(roomId, "newMessage", string(json))
+							log.Println("newMessageFinished")
+						}
+					}
 				}
 			}
 		})
