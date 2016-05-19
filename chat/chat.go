@@ -1,12 +1,12 @@
 package chat
 
 import (
+	"github.com/bitly/go-simplejson"
+	"github.com/googollee/go-socket.io"
 	"log"
 	"net/http"
 	"sharit-backend/models"
 	"time"
-
-	"github.com/googollee/go-socket.io"
 )
 
 func Run() {
@@ -18,52 +18,82 @@ func Run() {
 	server.On("connection", func(so socketio.Socket) {
 		log.Println("on connection")
 
-		so.On("connect", func(data map[string]interface{}) {
-			log.Println("connect")
-			//userId, _ := data["userId"].(string)
-			roomId, _ := data["roomId"].(string)
-			so.Join("roomId")
+		so.On("setRoom", func(data string) {
+			log.Println("setRoom")
+			d, err := simplejson.NewJson([]byte(data))
+			if err != nil {
+				log.Println(err)
+			} else {
+				userId := d.Get("userId").MustString()
+				roomId := d.Get("roomId").MustString()
 
-			room, err := models.FindRoom(roomId)
-			if err == nil { //continue
+				log.Println("userId:", userId)
+				log.Println("roomId:", roomId)
+				so.Join("/" + "roomId")
 
-				for message, _ := range room.MessagesRoom {
-					so.Emit("newMessage", message)
-					so.BroadcastTo(roomId, "newMessage", message)
+				room, err := models.FindRoom(roomId)
+				if err != nil {
+					log.Println(err)
+				} else {
+					for message, _ := range room.MessagesRoom {
+						so.Emit("newMessage", message)
+						so.BroadcastTo(roomId, "newMessage", message)
+					}
+					log.Println("setRoomFinished")
 				}
 			}
 		})
 
-		so.On("newMessage", func(data map[string]interface{}) {
-			log.Println("new message")
-			userId, _ := data["userId"].(string)
-			roomId, _ := data["roomId"].(string)
-			message, _ := data["message"].(string)
+		so.On("newMessage", func(data string) {
+			log.Println("newMessage")
+			d, err := simplejson.NewJson([]byte(data))
+			if err != nil {
+				log.Println(err)
+			} else {
+				userId := d.Get("userId").MustString()
+				roomId := d.Get("roomId").MustString()
+				message := d.Get("message").MustString()
 
-			var msg models.Message
-			msg.UserId = userId
-			msg.Text = message
-			msg.Date = time.Now().UTC().Format(time.RFC3339Nano)
-			room, err := models.FindRoom(roomId)
-			if err == nil {
-				err = room.PutMessage(msg)
+				var msg models.Message
+				msg.UserId = userId
+				msg.Text = message
+				msg.Date = time.Now().UTC().Format(time.RFC3339Nano)
+				room, err := models.FindRoom(roomId)
+				if err != nil {
+					log.Println(err)
+				} else {
+					err = room.PutMessage(msg)
+					so.Emit("newMessage", msg)
+					so.BroadcastTo(roomId, "newMessage", msg)
+					log.Println("newMessageFinished")
+				}
 			}
-
-			log.Println("emit:", so.Emit("newMessage", msg))
-			so.BroadcastTo(roomId, "newMessage", msg)
 		})
 
 		so.On("disconnection", func() {
 			log.Println("on disconnect")
 		})
 	})
+
 	server.On("error", func(so socketio.Socket, err error) {
 		log.Println("error:", err)
 	})
 
 	http.HandleFunc("/socket.io/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		/*w.Header().Set("Access-Control-Allow-Origin", "*")//"http://localhost:8100")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		server.ServeHTTP(w, r)*/
+		if origin := r.Header.Get("Origin"); origin != "" {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+			w.Header().Set("Access-Control-Allow-Headers",
+				"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+		}
+		// Stop here if its Preflighted OPTIONS request
+		if r.Method == "OPTIONS" {
+			return
+		}
 		server.ServeHTTP(w, r)
 	})
 
@@ -75,70 +105,70 @@ func Run() {
 
 /*var lmMutex sync.Mutex
 
-  sio, err := socketio.NewServer(nil)
-	if err != nil {
-	   log.Fatal(err)
-	}
+			sio, err := socketio.NewServer(nil)
+			if err != nil {
+			log.Fatal(err)
+		}
 
-  sio.On("connection", func(socket socketio.Socket) {
-    //var userId string
+		sio.On("connection", func(socket socketio.Socket) {
+		//var userId string
 		socket.On("open", func (data map[string]interface{}){
-      //userId, _ := data["userId"].(string)
-      roomId, _ := data["roomId"].(string)
-			fmt.Println("connect to: " + roomId)
-			lmMutex.Lock()
-      connect(socket, roomId)
-			lmMutex.Unlock()
-    })
-
-    socket.On("newMessage", func (data map[string]interface{}) {
-			fmt.Println("new message")
-			userId, _ := data["userId"].(string)
-      roomId, _ := data["roomId"].(string)
-			message, _ := data["message"].(string)
-			fmt.Println("new message " + userId + " " + roomId + " " + message)
-      newMessage(socket, userId, roomId, message);
-    })
-  })
-
-	sio.On("error", func(so socketio.Socket, err error) {
-			log.Println("error:", err)
+		//userId, _ := data["userId"].(string)
+		roomId, _ := data["roomId"].(string)
+		fmt.Println("connect to: " + roomId)
+		lmMutex.Lock()
+		connect(socket, roomId)
+		lmMutex.Unlock()
 	})
 
-	// Sets up the handlers and listen on port 80
-	http.Handle("/socket.io/", sio)
+	socket.On("newMessage", func (data map[string]interface{}) {
+	fmt.Println("new message")
+	userId, _ := data["userId"].(string)
+	roomId, _ := data["roomId"].(string)
+	message, _ := data["message"].(string)
+	fmt.Println("new message " + userId + " " + roomId + " " + message)
+	newMessage(socket, userId, roomId, message);
+})
+})
 
-	// Default to :8080 if not defined via environmental variable.
+sio.On("error", func(so socketio.Socket, err error) {
+log.Println("error:", err)
+})
 
-		var listen = ":8080"
+// Sets up the handlers and listen on port 80
+http.Handle("/socket.io/", sio)
 
-	http.ListenAndServe(listen, nil)
-	fmt.Println("hi")
+// Default to :8080 if not defined via environmental variable.
+
+var listen = ":8080"
+
+http.ListenAndServe(listen, nil)
+fmt.Println("hi")
 }*/
 
 /*func connect(socket socketio.Socket, roomId string) {
-  socket.Join("/"+ roomId)
+socket.Join("/"+ roomId)
 
-  room, err := models.FindRoom(roomId)
-  if err == nil { //continue
+room, err := models.FindRoom(roomId)
+if err == nil { //continue
 
-    for i, _ := range room.MessagesRoom {
-      socket.Emit("message", i)
-			//so.BroadcastTo(websocketRoom, "message", string(jsonRes))
-      //socket.Emit("message", room.MessagesRoom[i])
-    }
-  }
+for i, _ := range room.MessagesRoom {
+socket.Emit("message", i)
+//so.BroadcastTo(websocketRoom, "message", string(jsonRes))
+//socket.Emit("message", room.MessagesRoom[i])
+}
+}
 }
 
 func newMessage(socket socketio.Socket, userId string, roomId string, message string) {
-  var msg models.Message
-	msg.UserId = userId
-	msg.Text = message
-  msg.Date = time.Now().UTC().Format(time.RFC3339Nano)
-	room, err := models.FindRoom(roomId)
-  if err == nil { //continue
-		err = room.PutMessage(msg)
-  }
-	so.Emit("message", string(jsonRes))
-	so.BroadcastTo(websocketRoom, "message", string(jsonRes))
+var msg models.Message
+msg.UserId = userId
+msg.Text = message
+msg.Date = time.Now().UTC().Format(time.RFC3339Nano)
+room, err := models.FindRoom(roomId)
+if err == nil { //continue
+err = room.PutMessage(msg)
+}
+so.Emit("message", string(jsonRes))
+so.BroadcastTo(websocketRoom, "message", string(jsonRes))
 }*/

@@ -30,7 +30,7 @@ func init() {
 	beego.Router("/transaccions", &controllers.UserController{}, "get:GetTransaccions")
 	beego.Router("/transaccion", &controllers.UserController{}, "post:PutTransaccio")
 	beego.Router("/user", &controllers.UserController{}, "options:SendOptions")
-	beego.Router("/room/create", &controllers.SocketController{}, "get:CreateRoom")
+	beego.Router("/room/create", &controllers.SocketController{}, "post:CreateRoom")
 	beego.Router("/room/findRooms", &controllers.SocketController{}, "get:GetRooms")
 	beego.Router("/room/findRoom", &controllers.SocketController{}, "get:GetRoom")
 	//beego.Router("/room/putMessage", &controllers.SocketController{}, "get:PutMessage")
