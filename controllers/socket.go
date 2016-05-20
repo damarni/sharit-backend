@@ -1,6 +1,9 @@
 package controllers
 
-import "sharit-backend/models"
+import ("sharit-backend/models"
+				"encoding/json"
+				"time"
+)
 
 // SocketController does everything related to  login
 type SocketController struct {
@@ -9,14 +12,17 @@ type SocketController struct {
 
 // CreateRoom register
 func (c *SocketController) CreateRoom() {
-
-	usid1 := c.GetString("userid1")
-	usid2 := c.GetString("userid2")
-	itemid := c.GetString("itemid")
+	var datapoint models.Room
+	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
+	usid1 := datapoint.UserID1
+	usid2 := datapoint.UserID2
+	itemid := datapoint.ItemID
 	var r models.Room
 	r.UserID1 = usid1
 	r.UserID2 = usid2
 	r.ItemID = itemid
+	aux := itemid + time.Now().String()
+	r.RoomId = EncodeID64(usid1, usid2, aux)
 	r.Create()
 	c.Data["json"] = r
 	c.ServeJSON()
