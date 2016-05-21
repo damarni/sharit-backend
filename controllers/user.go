@@ -457,7 +457,7 @@ func (c *UserController) PutPeticio() {
 	p.Y = u.Y
 	p.Acceptada = false
 	p.Create()
-	c.Data["json"] = "ok"
+	c.Data["json"] = p
 	c.ServeJSON()
 
 }
