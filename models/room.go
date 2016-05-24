@@ -13,7 +13,7 @@ import (
 // Room is a user :D
 type Room struct {
 	ID           bson.ObjectId `bson:"_id,omitempty"`
-	RoomId			 string			   `bson:"roomid,omitempty"`
+	RoomId       string        `bson:"roomid,omitempty"`
 	UserID1      string        `bson:"userid1,omitempty"`
 	UserID2      string        `bson:"userid2,omitempty"`
 	ItemID       string        `bson:"itemid,omitempty"`
@@ -33,14 +33,13 @@ func (r *Room) Create() error {
 	return err
 }
 
+//name users, name item, no missatges
 // FindRooms returns a user found by steamid
 func FindRooms(usid string) (Rooms, error) {
 	var u Rooms
 	var w Rooms
-
 	db := mongo.Conn()
 	defer db.Close()
-
 	c := db.DB(beego.AppConfig.String("database")).C("rooms")
 	err := c.Find(bson.M{"userid1": usid}).All(&u)
 	err = c.Find(bson.M{"userid2": usid}).All(&w)

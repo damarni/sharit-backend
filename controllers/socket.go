@@ -1,8 +1,9 @@
 package controllers
 
-import ("sharit-backend/models"
-				"encoding/json"
-				"time"
+import (
+	"encoding/json"
+	"sharit-backend/models"
+	"time"
 )
 
 // SocketController does everything related to  login
@@ -28,16 +29,47 @@ func (c *SocketController) CreateRoom() {
 	c.ServeJSON()
 }
 
+type roomWithUsers struct {
+	RoomId   string
+	UserID1  string
+	UserID2  string
+	ItemID   string
+	NameU1   string
+	NameU2   string
+	NameItem string
+}
+
+type roomsWithUsers []roomWithUsers
+
 // GetRooms get a user
 func (c *SocketController) GetRooms() {
-
+	var retorn roomsWithUsers
 	id := c.GetString("userid")
 
 	u, err := models.FindRooms(id)
+	for _, r := range u {
+		var room roomWithUsers
+		room.ItemID = r.ItemID
+		room.RoomId = r.RoomId
+		room.UserID1 = r.UserID1
+		room.UserID2 = r.UserID2
+		u1, _ := models.FindUserByID(r.UserID1)
+		u2, _ := models.FindUserByID(r.UserID2)
+		var item models.Item
+		for _, it := range u2.ItemsUser {
+			if it.Idd == r.ItemID {
+				item = it
+			}
+		}
+		room.NameU1 = u1.Name
+		room.NameU2 = u2.Name
+		room.NameItem = item.ItemName
+		retorn = append(retorn, room)
+	}
 	if err != nil {
 		c.Data["json"] = "user not found"
 	} else {
-		c.Data["json"] = u
+		c.Data["json"] = retorn
 	}
 	c.ServeJSON()
 
