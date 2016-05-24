@@ -14,6 +14,7 @@ import (
 type Item struct {
 	ID          uint64    `bson:"_id,omitempty"`
 	Idd         string    `bson:"idd,omitempty"`
+	IDuser      string    `bson:"iduser,omitempty"`
 	ItemName    string    `bson:"itemname,omitempty"`
 	Description string    `bson:"description,omitempty"`
 	Image1      string    `bson:"image1,omitempty"`

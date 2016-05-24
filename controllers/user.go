@@ -265,6 +265,7 @@ func (c *UserController) PutItem() {
 	iduser, err := DecodeToken(token)
 	var i models.Item
 	stt := token + name + time.Now().String()
+	i.IDuser = iduser
 	i.Idd = EncodeMsg(stt)
 	i.ItemName = name
 	i.Description = description
