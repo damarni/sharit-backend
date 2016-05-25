@@ -30,13 +30,15 @@ func (c *SocketController) CreateRoom() {
 }
 
 type roomWithUsers struct {
-	RoomId   string
-	UserID1  string
-	UserID2  string
-	ItemID   string
-	NameU1   string
-	NameU2   string
-	NameItem string
+	RoomId    string
+	UserID1   string
+	UserID2   string
+	ItemID    string
+	NameU1    string
+	NameU2    string
+	SurnameU1 string
+	SurnameU2 string
+	NameItem  string
 }
 
 type roomsWithUsers []roomWithUsers
@@ -63,6 +65,8 @@ func (c *SocketController) GetRooms() {
 		}
 		room.NameU1 = u1.Name
 		room.NameU2 = u2.Name
+		room.SurnameU1 = u1.Surname
+		room.SurnameU2 = u2.Surname
 		room.NameItem = item.ItemName
 		retorn = append(retorn, room)
 	}

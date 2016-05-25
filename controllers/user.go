@@ -82,6 +82,7 @@ func (c *UserController) Register() {
 	stars := "0"
 	mail := datapoint.Email
 	pass := datapoint.Pass
+	image := datapoint.Image
 	fmt.Println(datapoint)
 	_, err := models.FindUserByID(EncodeID64(mail, name, surname))
 	if err != nil {
@@ -92,6 +93,7 @@ func (c *UserController) Register() {
 		u.Pass = pass
 		u.Name = name
 		u.Stars = stars
+		u.Image = image
 		coordx := 1
 		coordy := 1
 		u.X = coordx
@@ -447,9 +449,13 @@ func (c *UserController) PutPeticio() {
 
 	name := datapoint.Name
 	description := datapoint.Descripcio
+	image := datapoint.Image
 	u, _ := models.FindUserByID(iduser)
 	var p models.Peticio
 	p.IDuser = iduser
+	p.UserName = u.Name
+	p.UserSurname = u.Surname
+	p.Image = image
 	p.ID = EncodeMsg(iduser + time.Now().String())
 	p.Name = name
 	p.To = ""

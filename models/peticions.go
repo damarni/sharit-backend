@@ -13,16 +13,19 @@ import (
 
 // Peticio is a user :D
 type Peticio struct {
-	IDmongo    bson.ObjectId `bson:"_id,omitempty"`
-	ID         string        `bson:"id,omitempty"`
-	IDuser     string        `bson:"iduser,omitempty"`
-	Name       string        `bson:"name,omitempty"`
-	To         string        `bson:"to,omitempty"`
-	Descripcio string        `bson:"descripcio,omitempty"`
-	ItemID     string        `bson:"itemID,omitempty"`
-	X          int           `bson:"x,omitempty"`
-	Y          int           `bson:"y,omitempty"`
-	Acceptada  bool          `bson:"acceptada"`
+	IDmongo     bson.ObjectId `bson:"_id,omitempty"`
+	ID          string        `bson:"id,omitempty"`
+	IDuser      string        `bson:"iduser,omitempty"`
+	UserName    string        `bson:"username,omitempty"`
+	UserSurname string        `bson:"usersurname,omitempty"`
+	Name        string        `bson:"name,omitempty"`
+	To          string        `bson:"to,omitempty"`
+	Descripcio  string        `bson:"descripcio,omitempty"`
+	ItemID      string        `bson:"itemID,omitempty"`
+	X           int           `bson:"x,omitempty"`
+	Y           int           `bson:"y,omitempty"`
+	Acceptada   bool          `bson:"acceptada"`
+	Image       string        `bson:"image,omitempty"`
 }
 
 //Peticions is a list of User
