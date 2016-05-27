@@ -18,6 +18,7 @@ func (c *SocketController) CreateRoom() {
 	usid1 := datapoint.UserID1
 	usid2 := datapoint.UserID2
 	itemid := datapoint.ItemID
+
 	var r models.Room
 	r.UserID1 = usid1
 	r.UserID2 = usid2
@@ -79,16 +80,39 @@ func (c *SocketController) GetRooms() {
 
 }
 
+type GetRoomStruct struct {
+	Room      models.Room
+	NameU1    string
+	NameU2    string
+	SurnameU1 string
+	SurnameU2 string
+	NameItem  string
+}
+
 // GetRoom get a user
 func (c *SocketController) GetRoom() {
 
 	id := c.GetString("roomid")
-
-	u, err := models.FindRoom(id)
+	var room GetRoomStruct
+	r, err := models.FindRoom(id)
+	u1, _ := models.FindUserByID(r.UserID1)
+	u2, _ := models.FindUserByID(r.UserID2)
+	var item models.Item
+	for _, it := range u2.ItemsUser {
+		if it.Idd == r.ItemID {
+			item = it
+		}
+	}
+	room.NameU1 = u1.Name
+	room.NameU2 = u2.Name
+	room.SurnameU1 = u1.Surname
+	room.SurnameU2 = u2.Surname
+	room.Room = r
+	room.NameItem = item.ItemName
 	if err != nil {
 		c.Data["json"] = "user not found"
 	} else {
-		c.Data["json"] = u
+		c.Data["json"] = room
 	}
 	c.ServeJSON()
 

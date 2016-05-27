@@ -2,12 +2,13 @@ package chat
 
 import (
 	"encoding/json"
-	"github.com/bitly/go-simplejson"
-	"github.com/googollee/go-socket.io"
 	"log"
 	"net/http"
 	"sharit-backend/models"
 	"time"
+
+	"github.com/bitly/go-simplejson"
+	"github.com/googollee/go-socket.io"
 )
 
 func Run() {
@@ -32,16 +33,6 @@ func Run() {
 				log.Println("roomId:", roomId)
 				so.Join(roomId)
 
-				room, err := models.FindRoom(roomId)
-				if err != nil {
-					log.Println(err)
-				} else {
-					for message, _ := range room.MessagesRoom {
-						so.Emit("newMessage", message)
-						//so.BroadcastTo(roomId, "newMessage", message)
-					}
-					log.Println("setRoomFinished")
-				}
 			}
 		})
 
