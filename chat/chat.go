@@ -19,6 +19,7 @@ func Run() {
 	}
 	server.On("connection", func(so socketio.Socket) {
 		log.Println("on connection")
+		so.Emit("connection")
 
 		so.On("setRoom", func(data string) {
 			log.Println("setRoom")
