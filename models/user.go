@@ -15,20 +15,26 @@ import (
 
 // User is a user :D
 type User struct {
-	ID           bson.ObjectId `bson:"_id,omitempty"`
-	IDuser       string        `bson:"iduser,omitempty"`
-	Email        string        `bson:"email,omitempty"`
-	Pass         string        `bson:"pass,omitempty"`
-	Name         string        `bson:"name,omitempty"`
-	Surname      string        `bson:"surname,omitempty"`
-	Stars        string        `bson:"stars,omitempty"`
-	ItemsUser    Items         `bson:"itemsUser,omitempty"`
-	X            int           `bson:"x,omitempty"`
-	Y            int           `bson:"y,omitempty"`
-	Token        string        `bson:"token,omitempty"`
-	FavUser      Favs          `bson:"favuser,omitempty"`
-	Transaccions []Peticio     `bson:"transaccions,omitempty"`
-	Image        string        `bson:"image,omitempty"`
+	ID                 bson.ObjectId `bson:"_id,omitempty"`
+	IDuser             string        `bson:"iduser,omitempty"`
+	Email              string        `bson:"email,omitempty"`
+	Pass               string        `bson:"pass,omitempty"`
+	Name               string        `bson:"name,omitempty"`
+	Surname            string        `bson:"surname,omitempty"`
+	Stars              string        `bson:"stars,omitempty"`
+	ItemsUser          Items         `bson:"itemsUser,omitempty"`
+	X                  int           `bson:"x,omitempty"`
+	Y                  int           `bson:"y,omitempty"`
+	Token              string        `bson:"token,omitempty"`
+	FavUser            Favs          `bson:"favuser,omitempty"`
+	Transaccions       []Peticio     `bson:"transaccions,omitempty"`
+	Image              string        `bson:"image,omitempty"`
+	NumeroAnuncios     int           `bson:"nmeroanuncios,omitempty"`
+	NumeroPeticiones   int           `bson:"numeropeticiones,omitempty"`
+	NumeroValoraciones int           `bson:"numerovaloracions,omitempty"`
+	NumeroLikes        int           `bson:"nuemrolikes,omitempty"`
+	NumeroPrestados    int           `bson:"numeroprestados"`
+	NumeroPedidos      int           `bson:"numeropedidos:omitempty"`
 }
 
 //Users is a list of User

@@ -165,10 +165,6 @@ func (c *UserController) GetAll() {
 	c.ServeJSON()
 }
 
-type GetUsertStruct struct {
-	ID string `bson:"id"`
-}
-
 // Get get a user
 func (c *UserController) Get() {
 
@@ -176,10 +172,7 @@ func (c *UserController) Get() {
 	idToken, err := DecodeToken(token)
 
 	if err == nil {
-		id := ""
-		var datapoint GetUsertStruct
-		json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
-		id = datapoint.ID
+		id := c.GetString("id")
 		var u models.User
 		if id != "" {
 			u, err = models.FindUserByID(id)
