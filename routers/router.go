@@ -33,6 +33,13 @@ func init() {
 	beego.Router("/room/create", &controllers.SocketController{}, "post:CreateRoom")
 	beego.Router("/room/findRooms", &controllers.SocketController{}, "get:GetRooms")
 	beego.Router("/room/findRoom", &controllers.SocketController{}, "get:GetRoom")
+	beego.Router("/fav", &controllers.UserController{}, "post:PutFavourite")
+	beego.Router("/favs", &controllers.UserController{}, "get:GetFavouritesUsuari")
+	beego.Router("/fav", &controllers.UserController{}, "delete:DeleteFav")
+	beego.Router("/valorarItem", &controllers.UserController{}, "post:ValorarItem")
+	beego.Router("/valorarUser", &controllers.UserController{}, "post:ValorarUser")
+	beego.Router("/valoracions", &controllers.UserController{}, "get:GetValoracions")
+	beego.Router("/complain", &controllers.UserController{}, "post:PutComplain")
 	//beego.Router("/room/putMessage", &controllers.SocketController{}, "get:PutMessage")
 
 	beego.Router("/dashboard", &controllers.DashboardController{})

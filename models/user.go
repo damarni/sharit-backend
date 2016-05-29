@@ -19,9 +19,11 @@ type User struct {
 	IDuser             string        `bson:"iduser,omitempty"`
 	Email              string        `bson:"email,omitempty"`
 	Pass               string        `bson:"pass,omitempty"`
+	Idioma             string        `bson:"idioma,omitempty"`
+	Radi               int           `bson:"radi,omitempty"`
 	Name               string        `bson:"name,omitempty"`
 	Surname            string        `bson:"surname,omitempty"`
-	Stars              string        `bson:"stars,omitempty"`
+	Stars              float64       `bson:"stars,omitempty"`
 	ItemsUser          Items         `bson:"itemsUser,omitempty"`
 	X                  int           `bson:"x,omitempty"`
 	Y                  int           `bson:"y,omitempty"`
@@ -35,6 +37,28 @@ type User struct {
 	NumeroLikes        int           `bson:"nuemrolikes,omitempty"`
 	NumeroPrestados    int           `bson:"numeroprestados"`
 	NumeroPedidos      int           `bson:"numeropedidos:omitempty"`
+	Valoracions        Vals          `bson:"valoracions:omitempty"`
+}
+
+//numero de prestados y numero de pedidos se suma cuando se hace la valoracion
+//aclarar que peticiones son, in o out, y si son pendientes, o si son todas
+
+// UpdateNumeroLikes updates user profile
+func (u *User) UpNumeroLikes() error {
+	db := mongo.Conn()
+	defer db.Close()
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$inc": bson.M{"quantity": 1, "NumeroLikes": 1}})
+	return err
+}
+
+// DownNumeroLikes updates user profile
+func (u *User) DownNumeroLikes() error {
+	db := mongo.Conn()
+	defer db.Close()
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$inc": bson.M{"quantity": -1, "NumeroLikes": 1}})
+	return err
 }
 
 //Users is a list of User
@@ -112,12 +136,30 @@ func (u *User) UpdateItemModels(i Item) error {
 	return err
 }
 
+// PutComplainModel updates user profile
+func (u *User) PutComplainModel(i string) error {
+	db := mongo.Conn()
+	defer db.Close()
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+	err := c.Update(bson.M{"itemsUser": bson.M{"$elemMatch": bson.M{"Idd": i}, "iduser": u.IDuser}}, bson.M{"$inc": bson.M{"quantity": 1, "itemsUser.$.complains": 1}})
+	return err
+}
+
 // UpdateUser updates user profile
 func (u *User) UpdateUser() error {
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("users")
-	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$set": bson.M{"email": u.Email, "x": u.X, "y": u.Y}})
+	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$set": bson.M{"email": u.Email, "x": u.X, "y": u.Y, "radi": u.Radi, "idioma": u.Idioma}})
+	return err
+}
+
+// UpdateStars updates user profile
+func (u *User) UpdateStars(stars float64) error {
+	db := mongo.Conn()
+	defer db.Close()
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$set": bson.M{"stars": stars}})
 	return err
 }
 
@@ -165,12 +207,46 @@ func (u *User) PutItemModel(i Item) error {
 	return err
 }
 
+// PutValoracio put item on a user array
+func (u *User) PutValoracio(v Valoracio) error {
+	db := mongo.Conn()
+	defer db.Close()
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+	fmt.Println(u.IDuser)
+	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"valoracions": v}})
+	fmt.Println(err)
+
+	return err
+}
+
 // DeleteItemModell put item on a user array
 func (u *User) DeleteItemModel(id string) error {
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("users")
 	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$pull": bson.M{"itemsUser": bson.M{"idd": id}}})
+	fmt.Println(err)
+	return err
+
+}
+
+// DeleteFavModell put item on a user array
+func (u *User) DeleteFavModel(idItem, idUser string) error {
+	db := mongo.Conn()
+	defer db.Close()
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$pull": bson.M{"favuser": bson.M{"iduser": idUser, "iditem": idItem}}})
+	fmt.Println(err)
+	return err
+
+}
+
+//  DeleteTransaccioModel put item on a user array
+func (u *User) DeleteTransaccioModel(idTransacció string) error {
+	db := mongo.Conn()
+	defer db.Close()
+	c := db.DB(beego.AppConfig.String("database")).C("users")
+	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$pull": bson.M{"transaccions": bson.M{"id": idTransacció}}})
 	fmt.Println(err)
 	return err
 
@@ -189,12 +265,11 @@ func (u *User) PutFavouriteModel(i Item, idowner string) error {
 }
 
 // GetUsersRadi returns a user found by steamid
-func GetUsersRadi(x, y int) (Users, error) {
+func GetUsersRadi(x, y, radi int) (Users, error) {
 	var usrs Users
 
 	db := mongo.Conn()
 	defer db.Close()
-	radi, _ := beego.AppConfig.Int("radi")
 	c := db.DB(beego.AppConfig.String("database")).C("users")
 	err := c.Find(
 		bson.M{"$and": []interface{}{
@@ -216,12 +291,12 @@ func GetUsersRadi(x, y int) (Users, error) {
 }
 
 // GetItemsRadi returns a user found by steamid
-func GetItemsRadi(x, y int) (Items, error) {
+func GetItemsRadi(x, y, radi int) (Items, error) {
 	var itms Items
 	fmt.Println(x)
 	fmt.Println(y)
 
-	usrs, err := GetUsersRadi(x, y)
+	usrs, err := GetUsersRadi(x, y, radi)
 	if err != nil {
 		fmt.Println("error al get items")
 	} else {
