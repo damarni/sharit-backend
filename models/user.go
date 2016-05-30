@@ -253,13 +253,13 @@ func (u *User) DeleteTransaccioModel(idTransacció string) error {
 }
 
 // PutFavouriteModel put favourite on a user array FavUser
-func (u *User) PutFavouriteModel(i Item, idowner string) error {
+func (u *User) PutFavouriteModel(i, idowner string) error {
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("users")
 	var f Fav
 	f.IDuser = idowner
-	f.IDitem = strconv.Itoa(int(i.ID))
+	f.IDitem = i
 	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"favuser": f}})
 	return err
 }

@@ -684,20 +684,16 @@ func (c *UserController) GetPeticionsSelf() {
 
 // PutFavourite put a favourite to a user
 func (c *UserController) PutFavourite() {
-	iditem := c.GetString("idItem")
-	idowner := c.GetString("idowner")
+	var datapoint models.Fav
+	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
 	token := c.Ctx.Input.Header("token")
-	idusuari, err := DecodeToken(token)
-	//buscar owner
-	o, err := models.FindUserByID(idowner)
-	//buscar objecte dins owner
-	item, err := o.FindFavouriteByID(iditem)
-	//put objecte a usuari
-	u, err := models.FindUserByID(idusuari)
+	iduser, err := DecodeToken(token)
+	o, _ := models.FindUserByID(datapoint.IDuser)
+	u, err := models.FindUserByID(iduser)
 	if err != nil {
 		c.Data["json"] = "error user not found"
 	} else {
-		u.PutFavouriteModel(item, idowner)
+		u.PutFavouriteModel(datapoint.IDitem, datapoint.IDuser)
 		c.Data["json"] = "ok"
 		o.UpNumeroLikes()
 	}
