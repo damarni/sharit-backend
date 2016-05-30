@@ -68,6 +68,9 @@ type Users []User
 func (u *User) Create() error {
 	db := mongo.Conn()
 	defer db.Close()
+	fmt.Println("----------")
+
+	fmt.Println(u.Radi)
 	c := db.DB(beego.AppConfig.String("database")).C("users")
 	err := c.Insert(u)
 	fmt.Println(u)
