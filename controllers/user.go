@@ -486,18 +486,23 @@ func (c *UserController) GetItem(idItem, idUser string) models.Item {
 // GetItemSoft return user items
 func (c *UserController) GetItemSoft() {
 	token := c.Ctx.Input.Header("token")
-	idUser, err := DecodeToken(token)
-
+	idProp, err := DecodeToken(token)
+	idUser := c.GetString("idUser")
+	if idUser == "" {
+		idUser = idProp
+	}
+	fmt.Println(idUser)
 	idItem := c.GetString("idItem")
 	u, err := models.FindUserByID(idUser)
 	var item models.Item
-	uintID, _ := strconv.ParseUint(idItem, 10, 32)
 	if err != nil {
 		c.Data["json"] = "user not found"
 	} else {
 		items := u.ItemsUser
 		for _, it := range items {
-			if it.ID == uintID {
+			fmt.Println(it.Idd)
+			fmt.Println()
+			if it.Idd == idItem {
 				item = it
 			}
 		}
