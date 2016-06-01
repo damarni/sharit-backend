@@ -22,7 +22,7 @@ type Item struct {
 	Image3      string    `bson:"image3,omitempty"`
 	Stars       string    `bson:"stars,omitempty"`
 	LastSharit  time.Time `bson:"lastSharit,omitempty"`
-	Complains   int       `bson:"complains, omitempty"`
+	Complains   int       `bson:"complains,omitempty"`
 }
 
 // Items is a list of item
