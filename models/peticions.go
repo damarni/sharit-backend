@@ -22,8 +22,8 @@ type Peticio struct {
 	To          string        `bson:"to,omitempty"`
 	Descripcio  string        `bson:"descripcio,omitempty"`
 	ItemID      string        `bson:"itemID,omitempty"`
-	X           int           `bson:"x,omitempty"`
-	Y           int           `bson:"y,omitempty"`
+	X           float64       `bson:"x,omitempty"`
+	Y           float64       `bson:"y,omitempty"`
 	Acceptada   bool          `bson:"acceptada"`
 	Image       string        `bson:"image,omitempty"`
 }
@@ -42,7 +42,7 @@ func (p *Peticio) Create() error {
 }
 
 // GetPeticionsRadi returns a user found by steamid
-func GetPeticionsRadi(x, y, radi int, iduser string) (Peticions, error) {
+func GetPeticionsRadi(x, y, radi float64, iduser string) (Peticions, error) {
 	var pets Peticions
 
 	db := mongo.Conn()

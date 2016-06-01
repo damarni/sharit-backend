@@ -14,13 +14,13 @@ type UserController struct {
 }
 
 type LoginStruct struct {
-	Email  string `bson:"email"`
-	X      int    `bson:"x"`
-	Y      int    `bson:"y"`
-	Pass   string `bson:"pass"`
-	Radi   int    `bson:"radi"`
-	Idioma string `bson:"radi"`
-	Image  string `bson:"image"`
+	Email  string  `bson:"email"`
+	X      float64 `bson:"x"`
+	Y      float64 `bson:"y"`
+	Pass   string  `bson:"pass"`
+	Radi   float64 `bson:"radi"`
+	Idioma string  `bson:"radi"`
+	Image  string  `bson:"image"`
 }
 
 // Login user
@@ -97,10 +97,12 @@ func (c *UserController) Register() {
 		u.Name = name
 		u.Stars = stars
 		u.Image = image
-		u.Radi = 50
+		radi := 50.0
+		radi = ((radi / 1000) / 6378) * (180 * 3.141592)
+		u.Radi = radi
 		u.Idioma = "eng"
-		coordx := 1
-		coordy := 1
+		coordx := 1.0
+		coordy := 1.0
 		u.X = coordx
 		u.Y = coordy
 		u.Token, _ = EncodeToken(u.IDuser, pass)
@@ -131,10 +133,14 @@ func (c *UserController) EditProfile() {
 	fmt.Println(datapoint.Email)
 	mail := ""
 	mail = datapoint.Email
+	fmt.Println("Mail: ")
+	fmt.Println(mail)
 	idioma := ""
-	radi := -1
+
 	idioma = datapoint.Idioma
-	radi = datapoint.Radi
+	radi := datapoint.Radi
+	fmt.Println("Radi: ")
+	fmt.Println(radi)
 	token := c.Ctx.Input.Header("token")
 	id, err := DecodeToken(token)
 	if err != nil {
@@ -144,15 +150,18 @@ func (c *UserController) EditProfile() {
 	}
 	image := ""
 	image = datapoint.Image
-	coordx := -1
-	coordy := -1
+	coordx := -1.0
+	coordy := -1.0
 	coordx = datapoint.X
 	coordy = datapoint.Y
 	u, _ := models.FindUserByID(id)
 	if mail != "" {
 		u.Email = mail
 	}
-	if radi != -1 {
+	if radi != 0 {
+		fmt.Println("Radi in ")
+
+		radi = ((radi / 1000) / 6378) * (180 * 3.141592)
 		u.Radi = radi
 	}
 	if idioma != "" {

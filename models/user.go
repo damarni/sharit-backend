@@ -20,13 +20,13 @@ type User struct {
 	Email              string        `bson:"email,omitempty"`
 	Pass               string        `bson:"pass,omitempty"`
 	Idioma             string        `bson:"idioma,omitempty"`
-	Radi               int           `bson:"radi,omitempty"`
+	Radi               float64       `bson:"radi,omitempty"`
 	Name               string        `bson:"name,omitempty"`
 	Surname            string        `bson:"surname,omitempty"`
 	Stars              float64       `bson:"stars,omitempty"`
 	ItemsUser          Items         `bson:"itemsUser,omitempty"`
-	X                  int           `bson:"x,omitempty"`
-	Y                  int           `bson:"y,omitempty"`
+	X                  float64       `bson:"x,omitempty"`
+	Y                  float64       `bson:"y,omitempty"`
 	Token              string        `bson:"token,omitempty"`
 	FavUser            Favs          `bson:"favuser,omitempty"`
 	Transaccions       []Peticio     `bson:"transaccions,omitempty"`
@@ -265,7 +265,7 @@ func (u *User) PutFavouriteModel(i, idowner string) error {
 }
 
 // GetUsersRadi returns a user found by steamid
-func GetUsersRadi(x, y, radi int) (Users, error) {
+func GetUsersRadi(x, y, radi float64) (Users, error) {
 	var usrs Users
 
 	db := mongo.Conn()
@@ -291,7 +291,7 @@ func GetUsersRadi(x, y, radi int) (Users, error) {
 }
 
 // GetItemsRadi returns a user found by steamid
-func GetItemsRadi(x, y, radi int) (Items, error) {
+func GetItemsRadi(x, y, radi float64) (Items, error) {
 	var itms Items
 	fmt.Println(x)
 	fmt.Println(y)
