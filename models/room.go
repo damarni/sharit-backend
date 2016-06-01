@@ -12,12 +12,15 @@ import (
 
 // Room is a user :D
 type Room struct {
-	ID           bson.ObjectId `bson:"_id,omitempty"`
-	RoomId       string        `bson:"roomid,omitempty"`
-	UserID1      string        `bson:"userid1,omitempty"`
-	UserID2      string        `bson:"userid2,omitempty"`
-	ItemID       string        `bson:"itemid,omitempty"`
-	MessagesRoom Messages      `bson:"messages,omitempty"`
+	ID        bson.ObjectId `bson:"_id,omitempty"`
+	RoomId    string        `bson:"roomid,omitempty"`
+	UserID1   string        `bson:"userid1,omitempty"`
+	UserID2   string        `bson:"userid2,omitempty"`
+	HasRated1 bool          `bson:"hasrated1,omitempty"`
+	HasRated2 bool          `bson:"hasrated2,omitempty"`
+	ItemID    string        `bson:"itemid,omitempty"`
+
+	MessagesRoom Messages `bson:"messages,omitempty"`
 }
 
 //Rooms is a list of User

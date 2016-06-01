@@ -481,6 +481,15 @@ func (c *UserController) GetItem(idItem, idUser string) models.Item {
 	return item
 }
 
+type GetItemSoftStruct struct {
+	IDuser  string  `bson:"iduser,omitempty"`
+	Name    string  `bson:"name,omitempty"`
+	Surname string  `bson:"surname,omitempty"`
+	X       float64 `bson:"x,omitempty"`
+	Y       float64 `bson:"y,omitempty"`
+	It      models.Item
+}
+
 // GetItemSoft return user items
 func (c *UserController) GetItemSoft() {
 	token := c.Ctx.Input.Header("token")
@@ -492,6 +501,12 @@ func (c *UserController) GetItemSoft() {
 	fmt.Println(idUser)
 	idItem := c.GetString("idItem")
 	u, err := models.FindUserByID(idUser)
+	var ret GetItemSoftStruct
+	ret.Name = u.Name
+	ret.Surname = u.Surname
+	ret.IDuser = u.IDuser
+	ret.X = u.X
+	ret.Y = u.Y
 	var item models.Item
 	if err != nil {
 		c.Data["json"] = "user not found"
@@ -504,8 +519,9 @@ func (c *UserController) GetItemSoft() {
 				item = it
 			}
 		}
+		ret.It = item
 	}
-	c.Data["json"] = item
+	c.Data["json"] = ret
 
 	c.ServeJSON()
 }
@@ -524,13 +540,13 @@ func (c *UserController) PutPeticio() {
 	image := datapoint.Image
 	u, _ := models.FindUserByID(iduser)
 	var p models.Peticio
-	p.IDuser = iduser
+	p.IDuser = ""
 	p.UserName = u.Name
 	p.UserSurname = u.Surname
 	p.Image = image
 	p.ID = EncodeMsg(iduser + time.Now().String())
 	p.Name = name
-	p.To = ""
+	p.To = iduser
 	p.Descripcio = description
 	p.X = u.X
 	p.Y = u.Y

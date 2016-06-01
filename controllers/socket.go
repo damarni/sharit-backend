@@ -23,6 +23,8 @@ func (c *SocketController) CreateRoom() {
 	r.UserID1 = usid1
 	r.UserID2 = usid2
 	r.ItemID = itemid
+	r.HasRated1 = false
+	r.HasRated2 = false
 	aux := itemid + time.Now().String()
 	r.RoomId = EncodeID64(usid1, usid2, aux)
 	r.Create()
