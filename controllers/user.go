@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"sharit-backend/models"
-	"strconv"
 	"time"
 )
 
@@ -469,13 +468,12 @@ func (c *UserController) GetItem(idItem, idUser string) models.Item {
 
 	u, err := models.FindUserByID(idUser)
 	var item models.Item
-	uintID, _ := strconv.ParseUint(idItem, 10, 32)
 	if err != nil {
 		c.Data["json"] = "user not found"
 	} else {
 		items := u.ItemsUser
 		for _, it := range items {
-			if it.ID == uintID {
+			if it.Idd == idItem {
 				item = it
 			}
 		}
@@ -739,8 +737,9 @@ func (c *UserController) DeleteFav() {
 	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
 	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
+	fmt.Println(datapoint.IDuser)
+	fmt.Println(datapoint.IDitem)
 	o, err := models.FindUserByID(datapoint.IDuser)
-	o.DownNumeroLikes()
 	u, err := models.FindUserByID(iduser)
 	if err != nil {
 		c.Data["json"] = "user not found"
@@ -748,6 +747,7 @@ func (c *UserController) DeleteFav() {
 		fmt.Println("ok item")
 		u.DeleteFavModel(datapoint.IDitem, datapoint.IDuser)
 		u, _ := models.FindUserByID(iduser)
+		o.DownNumeroLikes()
 		c.Data["json"] = u
 	}
 	c.ServeJSON()
