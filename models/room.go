@@ -83,8 +83,7 @@ func (r *Room) Rate1() error {
 		return err
 	} else {
 		fmt.Println("try rate")
-
-		err := c.Update(bson.M{"roomid": r.RoomId}, bson.M{"rated1": true})
+		err := c.Update(bson.M{"roomid": r.RoomId}, bson.M{"$set": bson.M{"rated1": true}})
 		return err
 	}
 }
@@ -100,7 +99,7 @@ func (r *Room) Rate2() error {
 		return err
 	} else {
 		fmt.Println("try rate")
-		err := c.Update(bson.M{"roomid": r.RoomId}, bson.M{"rated2": true})
+		err := c.Update(bson.M{"roomid": r.RoomId}, bson.M{"$set": bson.M{"rated2": true}})
 		return err
 	}
 
