@@ -78,7 +78,7 @@ func GetPeticionsSelf(iduser string) (Peticions, error) {
 	err := c.Find(
 		bson.M{
 			"$and": []interface{}{
-				bson.M{"iduser": bson.M{"$ne": iduser}},
+				bson.M{"to": bson.M{"$ne": iduser}},
 				bson.M{"acceptada": false}}}).All(&pets)
 	return pets, err
 }
