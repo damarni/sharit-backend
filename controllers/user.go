@@ -695,8 +695,8 @@ func (c *UserController) ValorarItem() {
 		user.UpdateStars(new)
 		user.PutValoracio(val)
 		u.DeleteTransaccioModel(datapoint.IDpet)
-		//room, _ := models.FindRoom(datapoint.RoomId)
-		//room.Rate1()
+		room, _ := models.FindRoom(datapoint.RoomId)
+		room.Rate1()
 		c.Data["json"] = "ok"
 
 	}
@@ -742,8 +742,8 @@ func (c *UserController) ValorarUser() {
 		user.UpdateStars(new)
 		user.PutValoracio(val)
 		u.DeleteTransaccioModel(datapoint.IDpet)
-		//room, _ := models.FindRoom(datapoint.RoomId)
-		//room.Rate1()
+		room, _ := models.FindRoom(datapoint.RoomId)
+		room.Rate1()
 		c.Data["json"] = "ok"
 
 	}
