@@ -657,8 +657,11 @@ func (c *UserController) ValorarItem() {
 	//rebre el token i verificar si es coorrecte
 	var datapoint ValoracioCall
 	var val models.Valoracio
-	json.Unmarshal(c.Ctx.Input.RequestBody, &val)
 	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
+	json.Unmarshal(c.Ctx.Input.RequestBody, &val)
+	fmt.Println(c.Ctx.Input.RequestBody)
+	fmt.Println(datapoint.User)
+	fmt.Println(datapoint)
 	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
 	fmt.Println("iduser1")
