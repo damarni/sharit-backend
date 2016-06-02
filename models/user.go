@@ -217,7 +217,10 @@ func (u *User) PutValoracio(v Valoracio) error {
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("users")
+	fmt.Println("id user putval")
 	fmt.Println(u.IDuser)
+	fmt.Println("val")
+	fmt.Println(v.IDtrans)
 	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"valoracions": v}})
 	fmt.Println(err)
 
@@ -251,6 +254,10 @@ func (u *User) DeleteTransaccioModel(idTransacció string) error {
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("users")
+	fmt.Println("id user delete trans")
+	fmt.Println(u.IDuser)
+	fmt.Println("id trans delete")
+	fmt.Println(idTransacció)
 	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$pull": bson.M{"transaccions": bson.M{"id": idTransacció}}})
 	fmt.Println(err)
 	return err
