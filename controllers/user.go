@@ -713,8 +713,8 @@ func (c *UserController) ValorarUser() {
 		new := ((x * y) + datapoint.Stars) / (y + 1)
 		user.UpdateStars(new)
 		user.PutValoracio(val)
-		u.DeleteTransaccioModel(datapoint.IDtrans)
-		room, _ := models.FindRoom(datapoint.IDRoom)
+		u.DeleteTransaccioModel(datapoint.IDpet)
+		room, _ := models.FindRoom(datapoint.RoomId)
 		room.Rate2()
 		c.Data["json"] = "ok"
 
