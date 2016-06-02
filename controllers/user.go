@@ -661,8 +661,17 @@ func (c *UserController) ValorarItem() {
 	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
 	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
-	u, _ := models.FindUserByID(iduser)
-	user, _ := models.FindUserByID(datapoint.User)
+	fmt.Println("iduser1")
+	fmt.Println(iduser)
+	fmt.Println("------")
+	u, err := models.FindUserByID(iduser)
+	fmt.Println(err)
+	fmt.Println("iduser2")
+	fmt.Println(datapoint.User)
+	fmt.Println("------")
+	user, err := models.FindUserByID(datapoint.User)
+	fmt.Println(err)
+
 	if err != nil {
 		c.Data["json"] = "Peticio ja acceptada"
 	} else {
