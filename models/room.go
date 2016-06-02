@@ -12,13 +12,13 @@ import (
 
 // Room is a user :D
 type Room struct {
-	ID        bson.ObjectId `bson:"_id,omitempty"`
-	RoomId    string        `bson:"roomid,omitempty"`
-	UserID1   string        `bson:"userid1,omitempty"`
-	UserID2   string        `bson:"userid2,omitempty"`
-	HasRated1 bool          `bson:"hasrated1,omitempty"`
-	HasRated2 bool          `bson:"hasrated2,omitempty"`
-	ItemID    string        `bson:"itemid,omitempty"`
+	ID      bson.ObjectId `bson:"_id,omitempty"`
+	RoomId  string        `bson:"roomid,omitempty"`
+	UserID1 string        `bson:"userid1,omitempty"`
+	UserID2 string        `bson:"userid2,omitempty"`
+	IdTrans string        `bson:"idtrans,omitempty"`
+	Rated   int           `bson:"rated,omitempty"`
+	ItemID  string        `bson:"itemid,omitempty"`
 
 	MessagesRoom Messages `bson:"messages,omitempty"`
 }
@@ -32,6 +32,7 @@ func (r *Room) Create() error {
 	defer db.Close()
 	var err error
 	c := db.DB(beego.AppConfig.String("database")).C("rooms")
+	r.Rated = 0
 	err = c.Insert(r)
 	return err
 }
@@ -68,4 +69,19 @@ func (r *Room) PutMessage(i Message) error {
 	c := db.DB(beego.AppConfig.String("database")).C("rooms")
 	err := c.Update(bson.M{"_id": r.ID}, bson.M{"$push": bson.M{"messages": i}})
 	return err
+}
+
+// Rate put item on a user array
+func (r *Room) Rate() error {
+	db := mongo.Conn()
+	defer db.Close()
+	c := db.DB(beego.AppConfig.String("database")).C("rooms")
+	if r.Rated == 1 {
+		err := c.Remove(bson.M{"roomid": r.RoomId})
+		return err
+	} else {
+		err := c.Update(bson.M{"roomid": r.RoomId}, bson.M{"rated": 1})
+		return err
+	}
+
 }

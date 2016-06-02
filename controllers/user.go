@@ -557,6 +557,10 @@ func (c *UserController) PutPeticio() {
 
 }
 
+type ReturnTrans struct {
+	IDTrans string `bson:"idtrans,omitempty"`
+}
+
 // PutTransaccio get a user
 func (c *UserController) PutTransaccio() {
 	//fer una peticio especifica a un usuari
@@ -585,7 +589,9 @@ func (c *UserController) PutTransaccio() {
 	pet.Acceptada = true
 	uTo.PutTransaccio(pet)
 	uPet.PutTransaccio(pet)
-	c.Data["json"] = "ok"
+	var t ReturnTrans
+	t.IDTrans = pet.ID
+	c.Data["json"] = t
 	c.ServeJSON()
 
 }
@@ -627,10 +633,21 @@ func (c *UserController) AcceptRadiPetition() {
 	c.ServeJSON()
 }
 
+type ValoracioCall struct {
+	IDtrans   string  `bson:"idpet"`
+	Valoracio string  `bson:"valoracio"`
+	Stars     float64 `bson:"stars"`
+	User      string  `bson:"user"`
+	IDitem    string  `bson:"iditem,omitempty"`
+	IDRoom    string  `bson:"roomid"`
+}
+
 // ValorarItem put peticio al radi
 func (c *UserController) ValorarItem() {
 	//rebre el token i verificar si es coorrecte
-	var datapoint models.Valoracio
+	var datapoint ValoracioCall
+	var val models.Valoracio
+	json.Unmarshal(c.Ctx.Input.RequestBody, &val)
 	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
 	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
@@ -644,8 +661,10 @@ func (c *UserController) ValorarItem() {
 		y := float64(len(user.Valoracions))
 		new := ((x * y) + datapoint.Stars) / (y + 1)
 		user.UpdateStars(new)
-		user.PutValoracio(datapoint)
+		user.PutValoracio(val)
 		u.DeleteTransaccioModel(datapoint.IDtrans)
+		room, _ := models.FindRoom(datapoint.IDRoom)
+		room.Rate()
 		c.Data["json"] = "ok"
 
 	}
@@ -655,7 +674,9 @@ func (c *UserController) ValorarItem() {
 // ValorarUser put peticio al radi
 func (c *UserController) ValorarUser() {
 	//rebre el token i verificar si es coorrecte
-	var datapoint models.Valoracio
+	var datapoint ValoracioCall
+	var val models.Valoracio
+	json.Unmarshal(c.Ctx.Input.RequestBody, &val)
 	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
 	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
@@ -669,8 +690,10 @@ func (c *UserController) ValorarUser() {
 		y := float64(len(user.Valoracions))
 		new := ((x * y) + datapoint.Stars) / (y + 1)
 		user.UpdateStars(new)
-		user.PutValoracio(datapoint)
+		user.PutValoracio(val)
 		u.DeleteTransaccioModel(datapoint.IDtrans)
+		room, _ := models.FindRoom(datapoint.IDRoom)
+		room.Rate()
 		c.Data["json"] = "ok"
 
 	}

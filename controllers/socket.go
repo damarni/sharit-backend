@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"sharit-backend/models"
 	"time"
 )
@@ -18,13 +19,13 @@ func (c *SocketController) CreateRoom() {
 	usid1 := datapoint.UserID1
 	usid2 := datapoint.UserID2
 	itemid := datapoint.ItemID
-
+	fmt.Println(datapoint.IdTrans)
 	var r models.Room
 	r.UserID1 = usid1
 	r.UserID2 = usid2
 	r.ItemID = itemid
-	r.HasRated1 = false
-	r.HasRated2 = false
+	r.Rated = 0
+	r.IdTrans = datapoint.IdTrans
 	aux := itemid + time.Now().String()
 	r.RoomId = EncodeID64(usid1, usid2, aux)
 	r.Create()
