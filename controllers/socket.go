@@ -47,6 +47,9 @@ type roomWithUsers struct {
 	SurnameU1 string
 	SurnameU2 string
 	NameItem  string
+	IdTrans   string
+	Rated1    bool
+	Rated2    bool
 }
 
 type roomsWithUsers []roomWithUsers
@@ -71,6 +74,9 @@ func (c *SocketController) GetRooms() {
 				item = it
 			}
 		}
+		room.IdTrans = r.IdTrans
+		room.Rated1 = r.Rated1
+		room.Rated2 = r.Rated2
 		room.NameU1 = u1.Name
 		room.NameU2 = u2.Name
 		room.SurnameU1 = u1.Surname
