@@ -139,7 +139,7 @@ func (c *UserController) EditProfile() {
 	fmt.Println("Mail: ")
 	fmt.Println(mail)
 	idioma := ""
-	name = datapoint.Name
+	name := datapoint.Name
 	surname := datapoint.Surname
 	idioma = datapoint.Idioma
 	radi := datapoint.Radi
