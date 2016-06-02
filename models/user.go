@@ -220,7 +220,7 @@ func (u *User) PutValoracio(v Valoracio) error {
 	fmt.Println("id user putval")
 	fmt.Println(u.IDuser)
 	fmt.Println("val")
-	fmt.Println(v.IDtrans)
+	fmt.Println(v)
 	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"valoracions": v}})
 	fmt.Println(err)
 
