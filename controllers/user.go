@@ -644,12 +644,12 @@ func (c *UserController) AcceptRadiPetition() {
 }
 
 type ValoracioCall struct {
-	IDtrans   string  `bson:"idpet"`
+	IDpet     string  `bson:"idpet"`
 	Valoracio string  `bson:"valoracio"`
 	Stars     float64 `bson:"stars"`
 	User      string  `bson:"user"`
 	IDitem    string  `bson:"iditem,omitempty"`
-	IDRoom    string  `bson:"roomid"`
+	RoomId    string  `bson:"roomid,omitempty"`
 }
 
 // ValorarItem put peticio al radi
@@ -684,8 +684,8 @@ func (c *UserController) ValorarItem() {
 		new := ((x * y) + datapoint.Stars) / (y + 1)
 		user.UpdateStars(new)
 		user.PutValoracio(val)
-		u.DeleteTransaccioModel(datapoint.IDtrans)
-		room, _ := models.FindRoom(datapoint.IDRoom)
+		u.DeleteTransaccioModel(datapoint.IDpet)
+		room, _ := models.FindRoom(datapoint.RoomId)
 		room.Rate1()
 		c.Data["json"] = "ok"
 
