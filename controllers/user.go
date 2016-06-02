@@ -712,10 +712,24 @@ func (c *UserController) ValorarUser() {
 	val.Stars = datapoint.Stars
 	val.User = datapoint.User
 	val.Valoracio = datapoint.Valoracio
+	val.Name = datapoint.Name
+	val.Surname = datapoint.Surname
+	fmt.Println(c.Ctx.Input.RequestBody)
+	fmt.Println(datapoint.User)
+	fmt.Println(datapoint)
 	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
-	u, _ := models.FindUserByID(iduser)
-	user, _ := models.FindUserByID(datapoint.User)
+	fmt.Println("iduser1")
+	fmt.Println(iduser)
+	fmt.Println("------")
+	u, err := models.FindUserByID(iduser)
+	fmt.Println(err)
+	fmt.Println("iduser2")
+	fmt.Println(datapoint.User)
+	fmt.Println("------")
+	user, err := models.FindUserByID(datapoint.User)
+	fmt.Println(err)
+
 	if err != nil {
 		c.Data["json"] = "Peticio ja acceptada"
 	} else {
@@ -726,8 +740,8 @@ func (c *UserController) ValorarUser() {
 		user.UpdateStars(new)
 		user.PutValoracio(val)
 		u.DeleteTransaccioModel(datapoint.IDpet)
-		room, _ := models.FindRoom(datapoint.RoomId)
-		room.Rate2()
+		//room, _ := models.FindRoom(datapoint.RoomId)
+		//room.Rate1()
 		c.Data["json"] = "ok"
 
 	}
