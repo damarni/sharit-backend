@@ -674,7 +674,7 @@ func (c *UserController) ValorarItem() {
 		user.PutValoracio(val)
 		u.DeleteTransaccioModel(datapoint.IDtrans)
 		room, _ := models.FindRoom(datapoint.IDRoom)
-		room.Rate()
+		room.Rate1()
 		c.Data["json"] = "ok"
 
 	}
@@ -703,7 +703,7 @@ func (c *UserController) ValorarUser() {
 		user.PutValoracio(val)
 		u.DeleteTransaccioModel(datapoint.IDtrans)
 		room, _ := models.FindRoom(datapoint.IDRoom)
-		room.Rate()
+		room.Rate2()
 		c.Data["json"] = "ok"
 
 	}

@@ -27,7 +27,8 @@ func (c *SocketController) CreateRoom() {
 	r.UserID1 = usid1
 	r.UserID2 = usid2
 	r.ItemID = itemid
-	r.Rated = 0
+	r.Rated1 = false
+	r.Rated2 = false
 	r.IdTrans = datapoint.IdTrans
 	aux := itemid + time.Now().String()
 	r.RoomId = EncodeID64(usid1, usid2, aux)

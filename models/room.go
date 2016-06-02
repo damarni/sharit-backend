@@ -17,7 +17,8 @@ type Room struct {
 	UserID1 string        `bson:"userid1,omitempty"`
 	UserID2 string        `bson:"userid2,omitempty"`
 	IdTrans string        `bson:"idtrans,omitempty"`
-	Rated   int           `bson:"rated,omitempty"`
+	Rated1  bool          `bson:"rated1,omitempty"`
+	Rated2  bool          `bson:"rated2,omitempty"`
 	ItemID  string        `bson:"itemid,omitempty"`
 
 	MessagesRoom Messages `bson:"messages,omitempty"`
@@ -32,7 +33,6 @@ func (r *Room) Create() error {
 	defer db.Close()
 	var err error
 	c := db.DB(beego.AppConfig.String("database")).C("rooms")
-	r.Rated = 0
 	err = c.Insert(r)
 	return err
 }
@@ -72,15 +72,29 @@ func (r *Room) PutMessage(i Message) error {
 }
 
 // Rate put item on a user array
-func (r *Room) Rate() error {
+func (r *Room) Rate1() error {
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("rooms")
-	if r.Rated == 1 {
+	if r.Rated2 {
 		err := c.Remove(bson.M{"roomid": r.RoomId})
 		return err
 	} else {
-		err := c.Update(bson.M{"roomid": r.RoomId}, bson.M{"rated": 1})
+		err := c.Update(bson.M{"roomid": r.RoomId}, bson.M{"rated1": true})
+		return err
+	}
+}
+
+// Rate2 put item on a user array
+func (r *Room) Rate2() error {
+	db := mongo.Conn()
+	defer db.Close()
+	c := db.DB(beego.AppConfig.String("database")).C("rooms")
+	if r.Rated1 {
+		err := c.Remove(bson.M{"roomid": r.RoomId})
+		return err
+	} else {
+		err := c.Update(bson.M{"roomid": r.RoomId}, bson.M{"rated2": true})
 		return err
 	}
 
