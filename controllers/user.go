@@ -151,6 +151,9 @@ func (c *UserController) EditProfile() {
 	}
 	image := ""
 	image = datapoint.Image
+	fmt.Println("IIIIIMAAGE ")
+	fmt.Println(image)
+
 	coordx := -1.0
 	coordy := -1.0
 	coordx = datapoint.X
@@ -176,6 +179,9 @@ func (c *UserController) EditProfile() {
 	}
 	if image != "" {
 		u.Image = image
+		fmt.Println("image no buida")
+	} else {
+		fmt.Println("image buida")
 	}
 	err = u.UpdateUser()
 	if err != nil {
