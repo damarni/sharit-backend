@@ -650,6 +650,8 @@ type ValoracioCall struct {
 	User      string  `bson:"user"`
 	IDitem    string  `bson:"iditem,omitempty"`
 	RoomId    string  `bson:"roomid,omitempty"`
+	Name      string  `bson:"name,omitempty"`
+	Surname   string  `bson:"surname,omitempty"`
 }
 
 // ValorarItem put peticio al radi
@@ -663,6 +665,8 @@ func (c *UserController) ValorarItem() {
 	val.Stars = datapoint.Stars
 	val.User = datapoint.User
 	val.Valoracio = datapoint.Valoracio
+	val.Name = datapoint.Name
+	val.Surname = datapoint.Surname
 	fmt.Println(c.Ctx.Input.RequestBody)
 	fmt.Println(datapoint.User)
 	fmt.Println(datapoint)
@@ -689,8 +693,8 @@ func (c *UserController) ValorarItem() {
 		user.UpdateStars(new)
 		user.PutValoracio(val)
 		u.DeleteTransaccioModel(datapoint.IDpet)
-		room, _ := models.FindRoom(datapoint.RoomId)
-		room.Rate1()
+		//room, _ := models.FindRoom(datapoint.RoomId)
+		//room.Rate1()
 		c.Data["json"] = "ok"
 
 	}

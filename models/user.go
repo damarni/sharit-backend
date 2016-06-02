@@ -37,7 +37,7 @@ type User struct {
 	NumeroLikes        int           `bson:"nuemrolikes,omitempty"`
 	NumeroPrestados    int           `bson:"numeroprestados"`
 	NumeroPedidos      int           `bson:"numeropedidos:omitempty"`
-	Valoracions        Vals          `bson:"valoracions:omitempty"`
+	Valoracions        Vals          `bson:"valoracions"`
 }
 
 //numero de prestados y numero de pedidos se suma cuando se hace la valoracion
@@ -223,7 +223,6 @@ func (u *User) PutValoracio(v Valoracio) error {
 	fmt.Println(v)
 	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"valoracions": v}})
 	fmt.Println(err)
-
 	return err
 }
 
