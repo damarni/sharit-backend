@@ -29,9 +29,13 @@ func (c *UserController) Login() {
 	mail := c.GetString("email")
 
 	pass := c.GetString("pass")
+	fmt.Println(mail)
+	fmt.Println(pass)
 	u, err := models.FindUserByMail(mail)
 	if err == nil {
+		fmt.Println("mail ok")
 		if pass == u.Pass {
+			fmt.Println("pass ok")
 			var r reg
 			r.Token = u.Token
 			r.Iduser = u.IDuser

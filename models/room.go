@@ -34,7 +34,12 @@ func (r *Room) Create() error {
 	defer db.Close()
 	var err error
 	c := db.DB(beego.AppConfig.String("database")).C("rooms")
-	err = c.Insert(r)
+
+	var auxroom Room
+	err = c.Find(bson.M{"roomid": r.RoomId}).One(&auxroom)
+	if err != nil {
+		err = c.Insert(r)
+	}
 	return err
 }
 

@@ -31,8 +31,12 @@ func (c *SocketController) CreateRoom() {
 	r.Rated2 = false
 	r.IdTrans = datapoint.IdTrans
 	aux := itemid + time.Now().String()
-	r.RoomId = EncodeID64(usid1, usid2, aux)
-	r.Create()
+	auxID := EncodeID64(usid1, usid2, aux)
+	r.RoomId = auxID
+	err := r.Create()
+	if err == nil {
+		r, _ = models.FindRoom(auxID)
+	}
 	c.Data["json"] = r
 	c.ServeJSON()
 }
