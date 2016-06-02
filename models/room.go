@@ -17,8 +17,8 @@ type Room struct {
 	UserID1 string        `bson:"userid1,omitempty"`
 	UserID2 string        `bson:"userid2,omitempty"`
 	IdTrans string        `bson:"idtrans,omitempty"`
-	Rated1  bool          `bson:"rated1,omitempty"`
-	Rated2  bool          `bson:"rated2,omitempty"`
+	Rated1  bool          `bson:"rated1"`
+	Rated2  bool          `bson:"rated2"`
 	ItemID  string        `bson:"itemid,omitempty"`
 
 	MessagesRoom Messages `bson:"messages,omitempty"`
@@ -76,7 +76,7 @@ func (r *Room) Rate1() error {
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("rooms")
-	if r.Rated2 {
+	if r.Rated2 == true {
 		err := c.Remove(bson.M{"roomid": r.RoomId})
 		return err
 	} else {
@@ -90,7 +90,7 @@ func (r *Room) Rate2() error {
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("rooms")
-	if r.Rated1 {
+	if r.Rated1 == true {
 		err := c.Remove(bson.M{"roomid": r.RoomId})
 		return err
 	} else {
