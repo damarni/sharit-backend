@@ -71,14 +71,14 @@ func GetPeticionsRadi(x, y, radi float64, iduser string) (Peticions, error) {
 // GetPeticionsSelf returns a user found by steamid
 func GetPeticionsSelf(iduser string) (Peticions, error) {
 	var pets Peticions
-
+	fmt.Println(iduser)
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("peticions")
 	err := c.Find(
 		bson.M{
 			"$and": []interface{}{
-				bson.M{"to": bson.M{"$ne": iduser}},
+				bson.M{"to": iduser},
 				bson.M{"acceptada": false}}}).All(&pets)
 	return pets, err
 }
