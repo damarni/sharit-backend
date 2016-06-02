@@ -658,7 +658,11 @@ func (c *UserController) ValorarItem() {
 	var datapoint ValoracioCall
 	var val models.Valoracio
 	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
-	json.Unmarshal(c.Ctx.Input.RequestBody, &val)
+	val.IDitem = datapoint.IDitem
+	val.IDtrans = datapoint.IDpet
+	val.Stars = datapoint.Stars
+	val.User = datapoint.User
+	val.Valoracio = datapoint.Valoracio
 	fmt.Println(c.Ctx.Input.RequestBody)
 	fmt.Println(datapoint.User)
 	fmt.Println(datapoint)
