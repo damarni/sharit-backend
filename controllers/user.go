@@ -96,9 +96,11 @@ func (c *UserController) Register() {
 		u.Name = name
 		u.Stars = stars
 		u.Image = image
+		u.RadiReal = 0
 		radi := 50.0
-		radi = ((radi / 1000) / 6378) * (180 * 3.141592)
 		u.Radi = radi
+		radi = ((radi / 1000) / 6378) * (180 * 3.141592)
+		u.RadiReal = radi
 		u.Idioma = "eng"
 		coordx := 1.0
 		coordy := 1.0
@@ -159,9 +161,9 @@ func (c *UserController) EditProfile() {
 	}
 	if radi != 0 {
 		fmt.Println("Radi in ")
-
-		radi = ((radi / 1000) / 6378) * (180 * 3.141592)
 		u.Radi = radi
+		radi = ((radi / 1000) / 6378) * (180 * 3.141592)
+		u.RadiReal = radi
 	}
 	if idioma != "" {
 		u.Idioma = idioma
@@ -419,7 +421,7 @@ func (c *UserController) GetItemsRadi() {
 	u, err := models.FindUserByID(iduser)
 	fmt.Println(iduser)
 	if err == nil {
-		items, err := models.GetItemsRadi(u.X, u.Y, u.Radi)
+		items, err := models.GetItemsRadi(u.X, u.Y, u.RadiReal)
 		if err == nil {
 			c.Data["json"] = items
 			c.ServeJSON()
@@ -754,7 +756,7 @@ func (c *UserController) GetPeticionsRadiUser() {
 	iduser, err := DecodeToken(token)
 	u, err := models.FindUserByID(iduser)
 	if err == nil {
-		peticions, err := models.GetPeticionsRadi(u.X, u.Y, u.Radi, iduser)
+		peticions, err := models.GetPeticionsRadi(u.X, u.Y, u.RadiReal, iduser)
 		if err == nil {
 			c.Data["json"] = peticions
 			c.ServeJSON()

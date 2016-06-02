@@ -21,6 +21,7 @@ type User struct {
 	Pass               string        `bson:"pass,omitempty"`
 	Idioma             string        `bson:"idioma,omitempty"`
 	Radi               float64       `bson:"radi,omitempty"`
+	RadiReal           float64       `bson:"radireal,omitempty"`
 	Name               string        `bson:"name,omitempty"`
 	Surname            string        `bson:"surname,omitempty"`
 	Stars              float64       `bson:"stars,omitempty"`

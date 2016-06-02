@@ -3,6 +3,7 @@ package models
 import (
 	//"github.com/novikk/redline/models/mongo"
 
+	"fmt"
 	"sharit-backend/models/mongo"
 
 	"github.com/astaxie/beego"
@@ -77,9 +78,12 @@ func (r *Room) Rate1() error {
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("rooms")
 	if r.Rated2 == true {
+		fmt.Println("try remove")
 		err := c.Remove(bson.M{"roomid": r.RoomId})
 		return err
 	} else {
+		fmt.Println("try rate")
+
 		err := c.Update(bson.M{"roomid": r.RoomId}, bson.M{"rated1": true})
 		return err
 	}
@@ -91,9 +95,11 @@ func (r *Room) Rate2() error {
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("rooms")
 	if r.Rated1 == true {
+		fmt.Println("try remove")
 		err := c.Remove(bson.M{"roomid": r.RoomId})
 		return err
 	} else {
+		fmt.Println("try rate")
 		err := c.Update(bson.M{"roomid": r.RoomId}, bson.M{"rated2": true})
 		return err
 	}
