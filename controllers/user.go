@@ -13,13 +13,15 @@ type UserController struct {
 }
 
 type LoginStruct struct {
-	Email  string  `bson:"email"`
-	X      float64 `bson:"x"`
-	Y      float64 `bson:"y"`
-	Pass   string  `bson:"pass"`
-	Radi   float64 `bson:"radi"`
-	Idioma string  `bson:"radi"`
-	Image  string  `bson:"image"`
+	Email   string  `bson:"email"`
+	X       float64 `bson:"x"`
+	Y       float64 `bson:"y"`
+	Pass    string  `bson:"pass"`
+	Radi    float64 `bson:"radi"`
+	Idioma  string  `bson:"radi"`
+	Image   string  `bson:"image"`
+	Name    string  `bson:"name"`
+	Surname string  `bson:"surname"`
 }
 
 // Login user
@@ -137,7 +139,8 @@ func (c *UserController) EditProfile() {
 	fmt.Println("Mail: ")
 	fmt.Println(mail)
 	idioma := ""
-
+	name = datapoint.Name
+	surname := datapoint.Surname
 	idioma = datapoint.Idioma
 	radi := datapoint.Radi
 	fmt.Println("Radi: ")
@@ -170,6 +173,14 @@ func (c *UserController) EditProfile() {
 	}
 	if idioma != "" {
 		u.Idioma = idioma
+	}
+
+	if name != "" {
+		u.Name = name
+	}
+
+	if surname != "" {
+		u.Surname = surname
 	}
 	if coordx != -1 {
 		u.X = coordx
