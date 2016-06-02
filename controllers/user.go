@@ -698,8 +698,12 @@ func (c *UserController) ValorarUser() {
 	//rebre el token i verificar si es coorrecte
 	var datapoint ValoracioCall
 	var val models.Valoracio
-	json.Unmarshal(c.Ctx.Input.RequestBody, &val)
 	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
+	val.IDitem = datapoint.IDitem
+	val.IDtrans = datapoint.IDpet
+	val.Stars = datapoint.Stars
+	val.User = datapoint.User
+	val.Valoracio = datapoint.Valoracio
 	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
 	u, _ := models.FindUserByID(iduser)
