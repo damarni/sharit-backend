@@ -565,7 +565,7 @@ type ReturnTrans struct {
 func (c *UserController) PutTransaccio() {
 	//fer una peticio especifica a un usuari
 	token := c.Ctx.Input.Header("token")
-	iduser, _ := DecodeToken(token)
+	userto, _ := DecodeToken(token)
 
 	var datapoint models.Peticio
 	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
@@ -575,7 +575,7 @@ func (c *UserController) PutTransaccio() {
 	name := datapoint.Name
 	description := datapoint.Descripcio
 
-	userto := datapoint.To
+	iduser := datapoint.IDuser
 	itemId := datapoint.ItemID
 	fmt.Print("Find userto")
 	fmt.Println(userto)
