@@ -190,10 +190,12 @@ func (u *User) PutTransaccio(p Peticio) error {
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("users")
-
+	fmt.Print("Models user")
+	fmt.Println(u.IDuser)
 	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"transaccions": p}})
-	fmt.Println(err)
 
+	fmt.Println(err)
+	fmt.Println("-----")
 	return err
 }
 

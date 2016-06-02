@@ -577,8 +577,15 @@ func (c *UserController) PutTransaccio() {
 
 	userto := datapoint.To
 	itemId := datapoint.ItemID
-	uTo, _ := models.FindUserByID(userto)
-	uPet, _ := models.FindUserByID(iduser)
+	fmt.Print("Find userto")
+	fmt.Println(userto)
+	uTo, err := models.FindUserByID(userto)
+	fmt.Println(err)
+	fmt.Print("Find user")
+	fmt.Println(iduser)
+	uPet, err := models.FindUserByID(iduser)
+	fmt.Println(err)
+	fmt.Println("------")
 	var pet models.Peticio
 	pet.ID = EncodeMsg(iduser + time.Now().String())
 	pet.Descripcio = description
@@ -589,6 +596,7 @@ func (c *UserController) PutTransaccio() {
 	pet.Y = uPet.Y
 	pet.ItemID = itemId
 	pet.Acceptada = true
+	fmt.Println("fem el put")
 	uTo.PutTransaccio(pet)
 	uPet.PutTransaccio(pet)
 	var t ReturnTrans
