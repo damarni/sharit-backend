@@ -569,7 +569,9 @@ func (c *UserController) PutTransaccio() {
 
 	var datapoint models.Peticio
 	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
-
+	fmt.Println("Pet")
+	fmt.Println(datapoint)
+	fmt.Println("------")
 	name := datapoint.Name
 	description := datapoint.Descripcio
 

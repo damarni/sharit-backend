@@ -16,6 +16,9 @@ type SocketController struct {
 func (c *SocketController) CreateRoom() {
 	var datapoint models.Room
 	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
+	fmt.Println("Rooms")
+	fmt.Println(datapoint)
+	fmt.Println("------")
 	usid1 := datapoint.UserID1
 	usid2 := datapoint.UserID2
 	itemid := datapoint.ItemID
