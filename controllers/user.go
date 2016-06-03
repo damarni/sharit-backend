@@ -685,6 +685,8 @@ func (c *UserController) ValorarItem() {
 	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
 	val.IDitem = datapoint.IDitem
 	val.IDtrans = datapoint.IDpet
+	fmt.Println("STAAAAAAAAAAAAAAAARS")
+	fmt.Println(datapoint.Stars)
 	val.Stars = datapoint.Stars
 	val.User = datapoint.User
 	val.Valoracio = datapoint.Valoracio
@@ -732,6 +734,8 @@ func (c *UserController) ValorarUser() {
 	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
 	val.IDitem = datapoint.IDitem
 	val.IDtrans = datapoint.IDpet
+	fmt.Println("STAAAAAAAAAAAAAAAARS")
+	fmt.Println(datapoint.Stars)
 	val.Stars = datapoint.Stars
 	val.User = datapoint.User
 	val.Valoracio = datapoint.Valoracio
