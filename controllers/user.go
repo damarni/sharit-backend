@@ -564,6 +564,9 @@ func (c *UserController) PutTransaccio() {
 	p.Lat = uPet.X
 	p.Lng = uPet.Y
 	p.Create()
+	p.Lat = uTo.X
+	p.Lng = uTo.Y
+	p.Create()
 	c.ServeJSON()
 
 }
@@ -592,9 +595,13 @@ func (c *UserController) AcceptRadiPetition() {
 		uPet, _ := models.FindUserByID(p.IDuser)
 		uTo.PutTransaccio(p)
 		uPet.PutTransaccio(p)
-		var p models.Point
-		p.Lat = uPet.X
-		p.Lng = uPet.Y
+		var po models.Point
+		po.Lat = uPet.X
+		po.Lng = uPet.Y
+		po.Create()
+		po.Lat = uTo.X
+		po.Lng = uTo.Y
+		po.Create()
 		c.Data["json"] = "ok"
 	}
 	c.ServeJSON()
