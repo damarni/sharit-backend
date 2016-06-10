@@ -1,8 +1,6 @@
 package models
 
 import (
-	//"github.com/novikk/redline/models/mongo"
-
 	"fmt"
 	"sharit-backend/models/mongo"
 
@@ -11,7 +9,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// Peticio is a user :D
 type Peticio struct {
 	IDmongo     bson.ObjectId `bson:"_id,omitempty"`
 	ID          string        `bson:"id,omitempty"`
@@ -28,10 +25,8 @@ type Peticio struct {
 	Image       string        `bson:"image,omitempty"`
 }
 
-//Peticions is a list of User
 type Peticions []Peticio
 
-// Create creates a user with its information in the database
 func (p *Peticio) Create() error {
 	db := mongo.Conn()
 	defer db.Close()
@@ -41,7 +36,6 @@ func (p *Peticio) Create() error {
 	return err
 }
 
-// GetPeticionsRadi returns a user found by steamid
 func GetPeticionsRadi(x, y, radi float64, iduser string) (Peticions, error) {
 	var pets Peticions
 
@@ -68,7 +62,6 @@ func GetPeticionsRadi(x, y, radi float64, iduser string) (Peticions, error) {
 	return pets, err
 }
 
-// GetPeticionsSelf returns a user found by steamid
 func GetPeticionsSelf(iduser string) (Peticions, error) {
 	var pets Peticions
 	fmt.Println(iduser)
@@ -83,7 +76,6 @@ func GetPeticionsSelf(iduser string) (Peticions, error) {
 	return pets, err
 }
 
-// FindPeticioByID returns a user found by steamid
 func FindPeticioByID(id string) (Peticio, error) {
 	var p Peticio
 
@@ -96,7 +88,6 @@ func FindPeticioByID(id string) (Peticio, error) {
 	return p, err
 }
 
-// FindPeticioByID returns a user found by steamid
 func DeletePeticioByID(id string) error {
 
 	db := mongo.Conn()
@@ -108,7 +99,6 @@ func DeletePeticioByID(id string) error {
 	return err
 }
 
-// UpdatePeticioTo updates user profile
 func (p *Peticio) UpdatePeticioTo() error {
 	db := mongo.Conn()
 	defer db.Close()

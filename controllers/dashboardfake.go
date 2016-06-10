@@ -15,7 +15,6 @@ func random(min, max float64) float64 {
 	return rand.Float64()*(max-min) + min
 }
 
-//Get jhj
 func (c *DashboardFakeController) Get() {
 	var data []models.Point
 	for i := 0; i < 800; i++ {

@@ -13,7 +13,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// User is a user :D
 type User struct {
 	ID                 bson.ObjectId `bson:"_id,omitempty"`
 	IDuser             string        `bson:"iduser,omitempty"`
@@ -41,10 +40,6 @@ type User struct {
 	Valoracions        Vals          `bson:"valoracions"`
 }
 
-//numero de prestados y numero de pedidos se suma cuando se hace la valoracion
-//aclarar que peticiones son, in o out, y si son pendientes, o si son todas
-
-// UpdateNumeroLikes updates user profile
 func (u *User) UpNumeroLikes() error {
 	db := mongo.Conn()
 	defer db.Close()
@@ -53,7 +48,6 @@ func (u *User) UpNumeroLikes() error {
 	return err
 }
 
-// DownNumeroLikes updates user profile
 func (u *User) DownNumeroLikes() error {
 	db := mongo.Conn()
 	defer db.Close()
@@ -62,10 +56,8 @@ func (u *User) DownNumeroLikes() error {
 	return err
 }
 
-//Users is a list of User
 type Users []User
 
-// Create creates a user with its information in the database
 func (u *User) Create() error {
 	db := mongo.Conn()
 	defer db.Close()
@@ -78,7 +70,6 @@ func (u *User) Create() error {
 	return err
 }
 
-// FindUserByID returns a user found by steamid
 func FindUserByID(id string) (User, error) {
 	var u User
 
@@ -91,7 +82,6 @@ func FindUserByID(id string) (User, error) {
 	return u, err
 }
 
-// DeleteUserByID returns a user found by steamid
 func DeleteUserByID(id string) error {
 
 	db := mongo.Conn()
@@ -103,7 +93,6 @@ func DeleteUserByID(id string) error {
 	return err
 }
 
-// FindUserByMail returns a user found by steamid
 func FindUserByMail(mail string) (User, error) {
 	var u User
 
@@ -116,7 +105,6 @@ func FindUserByMail(mail string) (User, error) {
 	return u, err
 }
 
-//FindFavouriteByID returns de favourite with the id idItem
 func (u *User) FindFavouriteByID(iditem string) (Item, error) {
 	var itemaux Item
 	var err error
@@ -131,7 +119,6 @@ func (u *User) FindFavouriteByID(iditem string) (Item, error) {
 
 }
 
-// UpdateItemModels updates user profile
 func (u *User) UpdateItemModels(i Item) error {
 	db := mongo.Conn()
 	defer db.Close()
@@ -140,7 +127,6 @@ func (u *User) UpdateItemModels(i Item) error {
 	return err
 }
 
-// PutComplainModel updates user profile
 func (u *User) PutComplainModel(i string) error {
 	db := mongo.Conn()
 	defer db.Close()
@@ -149,7 +135,6 @@ func (u *User) PutComplainModel(i string) error {
 	return err
 }
 
-// UpdateUser updates user profile
 func (u *User) UpdateUser() error {
 	db := mongo.Conn()
 	defer db.Close()
@@ -158,7 +143,6 @@ func (u *User) UpdateUser() error {
 	return err
 }
 
-// UpdateStars updates user profile
 func (u *User) UpdateStars(stars float64) error {
 	db := mongo.Conn()
 	defer db.Close()
@@ -167,7 +151,6 @@ func (u *User) UpdateStars(stars float64) error {
 	return err
 }
 
-// UpdateUserCoords updates user cordenades
 func (u *User) UpdateUserCoords() error {
 	db := mongo.Conn()
 	defer db.Close()
@@ -176,7 +159,6 @@ func (u *User) UpdateUserCoords() error {
 	return err
 }
 
-// GetAllUsers returns all users
 func GetAllUsers() (Users, error) {
 	db := mongo.Conn()
 	defer db.Close()
@@ -186,85 +168,57 @@ func GetAllUsers() (Users, error) {
 	return p, err
 }
 
-// PutTransaccio put item on a user array
 func (u *User) PutTransaccio(p Peticio) error {
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("users")
-	fmt.Print("Models user")
-	fmt.Println(u.IDuser)
 	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"transaccions": p}})
-
-	fmt.Println(err)
-	fmt.Println("-----")
 	return err
 }
 
-// PutItemModel put item on a user array
 func (u *User) PutItemModel(i Item) error {
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("users")
-	fmt.Println(u.IDuser)
-	fmt.Println(i)
 	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"itemsUser": i}})
-	fmt.Println(err)
-
 	return err
 }
 
-// PutValoracio put item on a user array
 func (u *User) PutValoracio(v Valoracio) error {
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("users")
-	fmt.Println("id user putval")
-	fmt.Println(u.IDuser)
-	fmt.Println("val")
-	fmt.Println(v)
 	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$push": bson.M{"valoracions": v}})
-	fmt.Println(err)
 	return err
 }
 
-// DeleteItemModell put item on a user array
 func (u *User) DeleteItemModel(id string) error {
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("users")
 	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$pull": bson.M{"itemsUser": bson.M{"idd": id}}})
-	fmt.Println(err)
 	return err
 
 }
 
-// DeleteFavModell put item on a user array
 func (u *User) DeleteFavModel(idItem, idUser string) error {
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("users")
 	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$pull": bson.M{"favuser": bson.M{"iduser": idUser, "iditem": idItem}}})
-	fmt.Println(err)
 	return err
 
 }
 
-//  DeleteTransaccioModel put item on a user array
 func (u *User) DeleteTransaccioModel(idTransacció string) error {
 	db := mongo.Conn()
 	defer db.Close()
 	c := db.DB(beego.AppConfig.String("database")).C("users")
-	fmt.Println("id user delete trans")
-	fmt.Println(u.IDuser)
-	fmt.Println("id trans delete")
-	fmt.Println(idTransacció)
 	err := c.Update(bson.M{"iduser": u.IDuser}, bson.M{"$pull": bson.M{"transaccions": bson.M{"id": idTransacció}}})
-	fmt.Println(err)
 	return err
 
 }
 
-// PutFavouriteModel put favourite on a user array FavUser
 func (u *User) PutFavouriteModel(i, idowner string) error {
 	db := mongo.Conn()
 	defer db.Close()
@@ -276,7 +230,6 @@ func (u *User) PutFavouriteModel(i, idowner string) error {
 	return err
 }
 
-// GetUsersRadi returns a user found by steamid
 func GetUsersRadi(x, y, radi float64) (Users, error) {
 	var usrs Users
 
@@ -294,23 +247,14 @@ func GetUsersRadi(x, y, radi float64) (Users, error) {
 					bson.M{"y": bson.M{"$lt": x + radi}},
 					bson.M{"y": bson.M{"$gt": x - radi}}}},
 		}}).All(&usrs)
-	fmt.Println("----------------------")
-
-	fmt.Println(usrs)
-	fmt.Println("----------------------")
 
 	return usrs, err
 }
 
-// GetItemsRadi returns a user found by steamid
 func GetItemsRadi(x, y, radi float64) (Items, error) {
 	var itms Items
-	fmt.Println(x)
-	fmt.Println(y)
-
 	usrs, err := GetUsersRadi(x, y, radi)
 	if err != nil {
-		fmt.Println("error al get items")
 	} else {
 		for _, usr := range usrs {
 			itms = append(itms, usr.ItemsUser...)

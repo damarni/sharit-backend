@@ -28,7 +28,6 @@ type Room struct {
 //Rooms is a list of User
 type Rooms []Room
 
-// Create creates a user with its information in the database
 func (r *Room) Create() error {
 	db := mongo.Conn()
 	defer db.Close()
@@ -43,8 +42,6 @@ func (r *Room) Create() error {
 	return err
 }
 
-//name users, name item, no missatges
-// FindRooms returns a user found by steamid
 func FindRooms(usid string) (Rooms, error) {
 	var u Rooms
 	var w Rooms
@@ -57,7 +54,6 @@ func FindRooms(usid string) (Rooms, error) {
 	return u, err
 }
 
-// FindRoom returns a user found by steamid
 func FindRoom(id string) (Room, error) {
 	var r Room
 	db := mongo.Conn()
@@ -68,7 +64,6 @@ func FindRoom(id string) (Room, error) {
 	return r, err
 }
 
-// PutMessage put item on a user array
 func (r *Room) PutMessage(i Message) error {
 	db := mongo.Conn()
 	defer db.Close()
@@ -77,7 +72,6 @@ func (r *Room) PutMessage(i Message) error {
 	return err
 }
 
-// Rate put item on a user array
 func (r *Room) Rate1() error {
 	db := mongo.Conn()
 	defer db.Close()
@@ -93,7 +87,6 @@ func (r *Room) Rate1() error {
 	}
 }
 
-// Rate2 put item on a user array
 func (r *Room) Rate2() error {
 	db := mongo.Conn()
 	defer db.Close()

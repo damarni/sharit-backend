@@ -8,17 +8,13 @@ import (
 	"github.com/astaxie/beego"
 )
 
-//"github.com/novikk/redline/models/mongo"
-
 type Point struct {
 	Lat float64 `json:"lat"`
 	Lng float64 `json:"lon"`
 }
 
-//Peticions is a list of User
 type Logs []Point
 
-// Create load the item to th db
 func (p *Point) Create() error {
 	db := mongo.Conn()
 	defer db.Close()

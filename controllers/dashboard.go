@@ -10,7 +10,6 @@ type DashboardController struct {
 	beego.Controller
 }
 
-//Get jhj
 func (c *DashboardController) Get() {
 	var data []models.Point
 	data, _ = models.GetAllLogs()

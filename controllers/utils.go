@@ -9,7 +9,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-// DecodeToken decode token
 func DecodeToken(myToken string) (string, error) {
 	token, err := jwt.Parse(myToken, func(token *jwt.Token) (interface{}, error) {
 		return []byte(beego.AppConfig.String("privateKey")), nil
@@ -23,7 +22,6 @@ func DecodeToken(myToken string) (string, error) {
 	return "Invalid token", err
 }
 
-//EncodeToken create token
 func EncodeToken(userID, pass string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	token.Claims["userid"] = userID
@@ -43,20 +41,17 @@ func EncodeToken(userID, pass string) (string, error) {
 	return tokenString, err
 }
 
-//EncodeID64 create id for a user
 func EncodeID64(email, name, surname string) string {
 	msg := email + name + surname
 	encoded := base64.StdEncoding.EncodeToString([]byte(msg))
 	return encoded
 }
 
-//EncodeID64 create id for a user
 func EncodeMsg(msg string) string {
 	encoded := base64.StdEncoding.EncodeToString([]byte(msg))
 	return encoded
 }
 
-// hash hash string
 func hash(s string) uint64 {
 	h := fnv.New64a()
 	h.Write([]byte(s))

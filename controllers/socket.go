@@ -7,12 +7,10 @@ import (
 	"time"
 )
 
-// SocketController does everything related to  login
 type SocketController struct {
 	BaseController
 }
 
-// CreateRoom register
 func (c *SocketController) CreateRoom() {
 	var datapoint models.Room
 	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
@@ -58,7 +56,6 @@ type roomWithUsers struct {
 
 type roomsWithUsers []roomWithUsers
 
-// GetRooms get a user
 func (c *SocketController) GetRooms() {
 	var retorn roomsWithUsers
 	id := c.GetString("userid")
@@ -106,7 +103,6 @@ type GetRoomStruct struct {
 	NameItem  string
 }
 
-// GetRoom get a user
 func (c *SocketController) GetRoom() {
 
 	id := c.GetString("roomid")
@@ -134,30 +130,3 @@ func (c *SocketController) GetRoom() {
 	c.ServeJSON()
 
 }
-
-// PutMessage get a user
-/*func (c *SocketController) PutMessage() {
-
-	idroom := c.GetString("idroom")
-	text := c.GetString("text")
-	user := c.GetString("user")
-	var who bool
-	who = false
-	if user == "1" {
-		who = true
-	} else {
-		who = false
-	}
-	var m models.Message
-	m.First = who
-	m.Text = text
-	r, err := models.FindRoom(idroom)
-	r.PutMessage(m)
-	if err != nil {
-		c.Data["json"] = "user not found"
-	} else {
-		c.Data["json"] = r
-	}
-	c.ServeJSON()
-
-}*/
