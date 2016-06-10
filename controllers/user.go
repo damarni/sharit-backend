@@ -107,11 +107,10 @@ func (c *UserController) Register() {
 		u.Radi = radi
 		radi = ((radi / 1000) / 6378) * (180 * 3.141592)
 		u.RadiReal = radi
-		u.Idioma = "eng"
-		coordx := 1.0
-		coordy := 1.0
-		u.X = coordx
-		u.Y = coordy
+		u.Idioma = "es-Es"
+
+		u.X = datapoint.X
+		u.Y = datapoint.Y
 		u.Token, _ = EncodeToken(u.IDuser, pass)
 		u.Create()
 		var r reg
@@ -508,6 +507,7 @@ type GetItemSoftStruct struct {
 	IDuser  string  `bson:"iduser,omitempty"`
 	Name    string  `bson:"name,omitempty"`
 	Surname string  `bson:"surname,omitempty"`
+	Stars   float64 `bson:"stars,omitempty"`
 	X       float64 `bson:"x,omitempty"`
 	Y       float64 `bson:"y,omitempty"`
 	It      models.Item
@@ -528,6 +528,7 @@ func (c *UserController) GetItemSoft() {
 	ret.Name = u.Name
 	ret.Surname = u.Surname
 	ret.IDuser = u.IDuser
+	ret.Stars = u.Stars
 	ret.X = u.X
 	ret.Y = u.Y
 	var item models.Item
@@ -685,29 +686,16 @@ func (c *UserController) ValorarItem() {
 	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
 	val.IDitem = datapoint.IDitem
 	val.IDtrans = datapoint.IDpet
-	fmt.Println("STAAAAAAAAAAAAAAAARS")
-	fmt.Println(datapoint.Stars)
 	val.Stars = datapoint.Stars
-	val.User = datapoint.User
 	val.Valoracio = datapoint.Valoracio
-	val.Name = datapoint.Name
-	val.Surname = datapoint.Surname
-	fmt.Println(c.Ctx.Input.RequestBody)
-	fmt.Println(datapoint.User)
-	fmt.Println(datapoint)
+
 	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
-	fmt.Println("iduser1")
-	fmt.Println(iduser)
-	fmt.Println("------")
 	u, err := models.FindUserByID(iduser)
-	fmt.Println(err)
-	fmt.Println("iduser2")
-	fmt.Println(datapoint.User)
-	fmt.Println("------")
+	val.Name = u.Name
+	val.Surname = u.Surname
+	val.User = u.IDuser
 	user, err := models.FindUserByID(datapoint.User)
-	fmt.Println(err)
-
 	if err != nil {
 		c.Data["json"] = "Peticio ja acceptada"
 	} else {
@@ -734,29 +722,15 @@ func (c *UserController) ValorarUser() {
 	json.Unmarshal(c.Ctx.Input.RequestBody, &datapoint)
 	val.IDitem = datapoint.IDitem
 	val.IDtrans = datapoint.IDpet
-	fmt.Println("STAAAAAAAAAAAAAAAARS")
-	fmt.Println(datapoint.Stars)
 	val.Stars = datapoint.Stars
-	val.User = datapoint.User
 	val.Valoracio = datapoint.Valoracio
-	val.Name = datapoint.Name
-	val.Surname = datapoint.Surname
-	fmt.Println(c.Ctx.Input.RequestBody)
-	fmt.Println(datapoint.User)
-	fmt.Println(datapoint)
 	token := c.Ctx.Input.Header("token")
 	iduser, err := DecodeToken(token)
-	fmt.Println("iduser1")
-	fmt.Println(iduser)
-	fmt.Println("------")
 	u, err := models.FindUserByID(iduser)
-	fmt.Println(err)
-	fmt.Println("iduser2")
-	fmt.Println(datapoint.User)
-	fmt.Println("------")
+	val.Name = u.Name
+	val.Surname = u.Surname
+	val.User = u.IDuser
 	user, err := models.FindUserByID(datapoint.User)
-	fmt.Println(err)
-
 	if err != nil {
 		c.Data["json"] = "Peticio ja acceptada"
 	} else {
