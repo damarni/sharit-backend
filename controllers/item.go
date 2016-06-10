@@ -5,16 +5,15 @@ import (
 	"sharit-backend/models"
 )
 
-// ItemController does everything related to steam login
 type ItemController struct {
 	BaseController
 }
 
-// Put register
 func (c *ItemController) Put() {
 
 	name := c.GetString("name")
 	description := c.GetString("description")
+
 	var u models.Item
 	u.ItemName = name
 	u.Description = description
@@ -22,7 +21,6 @@ func (c *ItemController) Put() {
 	c.ServeJSON()
 }
 
-// GetAll get all the users
 func (c *ItemController) GetAll() {
 	items, _ := models.GetAllItems()
 	_, er := json.Marshal(items)
@@ -36,7 +34,6 @@ func (c *ItemController) GetAll() {
 	c.ServeJSON()
 }
 
-// GetAllRadi get an user ---- encara per implementar
 func (c *ItemController) GetAllRadi() {
 	x := c.GetString("x")
 	y := c.GetString("y")

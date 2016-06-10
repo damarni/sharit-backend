@@ -3,24 +3,29 @@ package models
 import (
 	"errors"
 	"sharit-backend/models/mongo"
+	"time"
 
 	"github.com/astaxie/beego"
 
 	"gopkg.in/mgo.v2/bson"
 )
 
-// Item is a product :D
 type Item struct {
-	ID          bson.ObjectId `bson:"_id,omitempty"`
-	ItemName    string        `bson:"item,omitempty"`
-	Description string        `bson:"description,omitempty"`
-	Image       string        `bson:"imagen,omitempty"`
+	ID          uint64    `bson:"_id,omitempty"`
+	Idd         string    `bson:"idd,omitempty"`
+	IDuser      string    `bson:"iduser,omitempty"`
+	ItemName    string    `bson:"itemname,omitempty"`
+	Description string    `bson:"description,omitempty"`
+	Image1      string    `bson:"image1,omitempty"`
+	Image2      string    `bson:"image2,omitempty"`
+	Image3      string    `bson:"image3,omitempty"`
+	Stars       string    `bson:"stars,omitempty"`
+	LastSharit  time.Time `bson:"lastSharit,omitempty"`
+	Complains   int       `bson:"complains,omitempty"`
 }
 
-// Items is a list of item
 type Items []Item
 
-// GetAllItems returns all items
 func GetAllItems() (Items, error) {
 	db := mongo.Conn()
 	defer db.Close()
@@ -30,12 +35,10 @@ func GetAllItems() (Items, error) {
 	return p, err
 }
 
-// FindByID returns item given id
 func (p *Item) FindByID(id string) error {
 	db := mongo.Conn()
 	defer db.Close()
 
-	// check valid ID
 	if !bson.IsObjectIdHex(id) {
 		return errors.New("Invalid Object ID")
 	}
@@ -46,7 +49,6 @@ func (p *Item) FindByID(id string) error {
 	return err
 }
 
-// Create load the item to th db
 func (p *Item) Create() error {
 	db := mongo.Conn()
 	defer db.Close()
