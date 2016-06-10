@@ -107,7 +107,7 @@ func (c *UserController) Register() {
 		u.Radi = radi
 		radi = ((radi / 1000) / 6378) * (180 * 3.141592)
 		u.RadiReal = radi
-		u.Idioma = "es-Es"
+		u.Idioma = "es-ES"
 
 		u.X = datapoint.X
 		u.Y = datapoint.Y
@@ -626,6 +626,10 @@ func (c *UserController) PutTransaccio() {
 	var t ReturnTrans
 	t.IDTrans = pet.ID
 	c.Data["json"] = t
+	var p models.Point
+	p.Lat = uPet.X
+	p.Lng = uPet.Y
+	p.Create()
 	c.ServeJSON()
 
 }
@@ -661,6 +665,9 @@ func (c *UserController) AcceptRadiPetition() {
 		uPet, _ := models.FindUserByID(p.IDuser)
 		uTo.PutTransaccio(p)
 		uPet.PutTransaccio(p)
+		var p models.Point
+		p.Lat = uPet.X
+		p.Lng = uPet.Y
 		c.Data["json"] = "ok"
 
 	}
